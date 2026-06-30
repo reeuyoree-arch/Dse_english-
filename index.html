@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>DSE ENGLISH</title>
+  <title>S5 英文考試重點複習</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
   <style>
@@ -32,8 +32,8 @@
   <div class="max-w-4xl mx-auto px-4 pt-12">
     
     <div class="text-center mb-8 relative">
-      <h1 class="text-3xl font-black text-indigo-400 tracking-wide">DSE ENGLISH</h1>
-      <p class="text-sm text-gray-500 mt-2 font-medium">WELCOME TO CITYU</p>
+      <h1 class="text-3xl font-black text-indigo-400 tracking-wide">S5 英文考試重點複習</h1>
+      <p class="text-sm text-gray-500 mt-2 font-medium">2025-2026 S.5 Second Term Exam Coverage</p>
       <button onclick="toggleTheme()" id="theme-toggle-btn" class="absolute right-2 top-2 p-2 bg-gray-800/80 rounded-full border border-gray-700/50 text-gray-400 hover:text-white transition-all duration-200">
         ☀️
       </button>
@@ -41,16 +41,16 @@
 
     <div class="grid grid-cols-4 bg-card rounded-xl border overflow-hidden mb-6 text-xs md:text-sm font-semibold text-gray-400">
       <button onclick="switchTab('vocab')" id="btn-vocab" class="py-4 flex items-center justify-center space-x-1 md:space-x-2 tab-btn transition-all">
-        <span>📚</span> <span>VOCAB</span>
+        <span>📚</span> <span>詞彙列表</span>
       </button>
       <button onclick="switchTab('match')" id="btn-match" class="py-4 flex items-center justify-center space-x-1 md:space-x-2 tab-btn transition-all">
-        <span>🎮</span> <span>RANDOM MATCHING</span>
+        <span>🎮</span> <span>隨機配對</span>
       </button>
       <button onclick="switchTab('grammar')" id="btn-grammar" class="py-4 flex items-center justify-center space-x-1 md:space-x-2 tab-btn transition-all">
-        <span>📝</span> <span>GRAMMAR NOTES</span>
+        <span>📝</span> <span>文法筆記</span>
       </button>
       <button onclick="switchTab('writing')" id="btn-writing" class="py-4 flex items-center justify-center space-x-1 md:space-x-2 tab-btn transition-all">
-        <span>✍️</span> <span>WRITING TIPSSS</span>
+        <span>✍️</span> <span>寫作指南</span>
       </button>
     </div>
 
@@ -104,55 +104,12 @@
     </div>
 
     <div id="content-grammar" class="hidden space-y-6 tab-content">
-      <div class="space-y-6">
-        <div class="bg-card border border-t-4 border-t-indigo-500 rounded-2xl p-5 md:p-6 shadow-md space-y-4">
-          <div class="flex items-center space-x-3">
-            <span class="text-sm font-bold text-title">Inversion (倒裝句結構)</span>
-            <span class="text-[10px] font-bold px-2 py-0.5 rounded-md bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">Core Structure</span>
-          </div>
-          <div class="space-y-3.5 pl-1 text-sm text-desc leading-relaxed">
-            <div>
-              <p class="text-xs font-bold text-indigo-400 uppercase tracking-wider">📌 Structure Formula</p>
-              <p class="mt-1 bg-gray-900/20 p-3 rounded-xl border border-gray-500/20 font-mono text-xs text-title break-words">Negative Adverb (e.g., Seldom, Rarely, Not only) + Auxiliary Verb (助動詞) + Subject + Main Verb</p>
-            </div>
-            <div>
-              <p class="text-xs font-bold text-emerald-400 uppercase tracking-wider">📝 Example Sentence</p>
-              <p class="mt-1 text-title font-semibold italic">"Not only did he pass the exam, but he also secured a scholarship."</p>
-            </div>
-            <div class="bg-red-500/5 border border-red-500/10 rounded-xl p-3 flex items-start space-x-2">
-              <span class="text-red-400 text-xs">⚠️</span>
-              <div>
-                <p class="text-xs text-red-400 font-bold">Common Mistakes</p>
-                <p class="text-xs text-red-400/90 font-medium mt-0.5">忘記將助動詞（did/does/had）提至主語前方，寫成 Not only he passed...</p>
-              </div>
-            </div>
-          </div>
-        </div>
+      
+      <button onclick="openAddGrammarModal()" class="w-full bg-indigo-600/5 border-2 border-dashed border-indigo-500/40 rounded-2xl flex items-center justify-center text-indigo-400 hover:border-indigo-500 hover:bg-indigo-600/10 transition-all group py-5 shadow-sm">
+        <span class="text-lg font-bold group-hover:scale-105 transition-transform">+ 新增自訂文法筆記</span>
+      </button>
 
-        <div class="bg-card border border-t-4 border-t-indigo-500 rounded-2xl p-5 md:p-6 shadow-md space-y-4">
-          <div class="flex items-center space-x-3">
-            <span class="text-sm font-bold text-title">Relative Clauses (關係從句進階用法)</span>
-            <span class="text-[10px] font-bold px-2 py-0.5 rounded-md bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">Sentence Variety</span>
-          </div>
-          <div class="space-y-3.5 pl-1 text-sm text-desc leading-relaxed">
-            <div>
-              <p class="text-xs font-bold text-indigo-400 uppercase tracking-wider">📌 Structure Formula</p>
-              <p class="mt-1 bg-gray-900/20 p-3 rounded-xl border border-gray-500/20 font-mono text-xs text-title break-words">Noun + Preposition (e.g., in which, through which) + Relative Pronoun</p>
-            </div>
-            <div>
-              <p class="text-xs font-bold text-emerald-400 uppercase tracking-wider">📝 Example Sentence</p>
-              <p class="mt-1 text-title font-semibold italic">"The adversity through which she persevered defined her authentic character."</p>
-            </div>
-            <div class="bg-red-500/5 border border-red-500/10 rounded-xl p-3 flex items-start space-x-2">
-              <span class="text-red-400 text-xs">⚠️</span>
-              <div>
-                <p class="text-xs text-red-400 font-bold">Common Mistakes</p>
-                <p class="text-xs text-red-400/90 font-medium mt-0.5">介系詞選用錯誤，需搭配先行詞動詞的固定搭配用法。</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <div id="grammar-list-container" class="space-y-6"></div>
     </div>
 
     <div id="content-writing" class="hidden space-y-6 tab-content">
@@ -224,7 +181,43 @@
     </div>
   </div>
 
+  <div id="add-grammar-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+    <div class="bg-[#111827] border border-gray-800 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 text-left overflow-y-auto max-h-[90vh]">
+      <div>
+        <h3 class="text-base font-bold text-gray-100">新增自訂文法筆記</h3>
+        <p class="text-xs text-gray-500 mt-1">請填寫下方欄位，系統將會為你渲染出帶有紫色條帶裝飾的靜態文法卡片並保存在本地。</p>
+      </div>
+      <div class="space-y-3 text-sm">
+        <div>
+          <label class="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1">Grammar Title (文法名稱)</label>
+          <input id="modal-g-title" type="text" class="w-full bg-gray-900 border border-gray-800 rounded-xl px-3 py-2.5 text-gray-200 focus:outline-none focus:border-indigo-500 text-[15px]" placeholder="例如: Conditionals (條件句進階)">
+        </div>
+        <div>
+          <label class="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1">Structure Formula (結構公式)</label>
+          <textarea id="modal-g-formula" rows="2" class="w-full bg-gray-900 border border-gray-800 rounded-xl px-3 py-2 text-gray-200 focus:outline-none focus:border-indigo-500 font-mono text-xs" placeholder="例如: If + Subject + Had + V3, Subject + Would have + V3..."></textarea>
+        </div>
+        <div>
+          <label class="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1">Example Sentence (例句)</label>
+          <input id="modal-g-example" type="text" class="w-full bg-gray-900 border border-gray-800 rounded-xl px-3 py-2.5 text-gray-200 focus:outline-none focus:border-indigo-500 text-[15px]" placeholder="例如: If I had studied harder, I would have passed.">
+        </div>
+        <div>
+          <label class="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1">Common Mistakes (常見錯誤 - 可留空)</label>
+          <textarea id="modal-g-warning" rows="2" class="w-full bg-gray-900 border border-gray-800 rounded-xl px-3 py-2 text-gray-200 focus:outline-none focus:border-indigo-500 text-xs text-red-300" placeholder="例如: 誤將過去完成時寫成一般過去時，寫成了 If I studied harder..."></textarea>
+        </div>
+      </div>
+      <div class="flex justify-end space-x-2 pt-2">
+        <button onclick="closeAddGrammarModal()" class="px-4 py-2 bg-gray-800 text-xs font-semibold text-gray-400 rounded-lg hover:text-white transition-colors">
+          取消
+        </button>
+        <button onclick="submitNewGrammar()" class="px-4 py-2 bg-indigo-600 text-xs font-semibold text-white rounded-lg hover:bg-indigo-500 transition-colors shadow-md">
+          確認建立
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script>
+    // 1. 單字庫初始數據
     const defaultWords = [
       { word: "abcde", type: "n.", def: "測試單字 A" },
       { word: "abcdf", type: "v.", def: "測試單字 B" },
@@ -250,23 +243,48 @@
       { word: "vulgar", type: "adj.", def: "粗俗的 / 庸俗的" }
     ];
 
-    let wordsData = [];
-
-    // 核心修復：極致安全的加載邏輯，防堵任何因為隱私機制導致列表空置的意外
-    function initWordsPayload() {
-      try {
-        const saved = localStorage.getItem("s5_vocab_data");
-        if (saved) {
-          const parsed = JSON.parse(saved);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            wordsData = parsed;
-            return;
-          }
-        }
-      } catch(e) {
-        console.log("LocalStorage 讀取被環境阻擋");
+    // 2. 文法庫初始內置數據
+    const defaultGrammar = [
+      {
+        title: "Inversion (倒裝句結構)",
+        tag: "Core Structure",
+        formula: "Negative Adverb (e.g., Seldom, Rarely, Not only) + Auxiliary Verb (助動詞) + Subject + Main Verb",
+        example: "Not only did he pass the exam, but he also secured a scholarship.",
+        warning: "忘記將助動詞（did/does/had）提至主語前方，寫成 Not only he passed..."
+      },
+      {
+        title: "Relative Clauses (關係從句進階用法)",
+        tag: "Sentence Variety",
+        formula: "Noun + Preposition (e.g., in which, through which) + Relative Pronoun",
+        example: "The adversity through which she persevered defined her authentic character.",
+        warning: "介系詞選用錯誤，需搭配先行詞動詞的固定搭配用法。"
       }
-      wordsData = [...defaultWords];
+    ];
+
+    let wordsData = [];
+    let grammarData = [];
+
+    // 極致安全的資料快取加載邏輯
+    function initPayloads() {
+      // 載入單字
+      try {
+        const savedWords = localStorage.getItem("s5_vocab_data");
+        if (savedWords) {
+          const parsed = JSON.parse(savedWords);
+          if (Array.isArray(parsed) && parsed.length > 0) { wordsData = parsed; }
+          else { wordsData = [...defaultWords]; }
+        } else { wordsData = [...defaultWords]; }
+      } catch(e) { wordsData = [...defaultWords]; }
+
+      // 載入文法
+      try {
+        const savedGrammar = localStorage.getItem("s5_grammar_data");
+        if (savedGrammar) {
+          const parsed = JSON.parse(savedGrammar);
+          if (Array.isArray(parsed) && parsed.length > 0) { grammarData = parsed; }
+          else { grammarData = [...defaultGrammar]; }
+        } else { grammarData = [...defaultGrammar]; }
+      } catch(e) { grammarData = [...defaultGrammar]; }
     }
 
     const symmetricTenses = {
@@ -278,7 +296,7 @@
     const writingSentences = [
       { tag: "Introduction", sentence: "It is widely acknowledged that adversity can either break an individual or craft a titan.", use: "用於議論文或論述文開頭引出背景" },
       { tag: "Body Paragraph", sentence: "In stark contrast to the common perception, data suggests we shouldn't undercut local authentic markets.", use: "用於承上啟下，提出強烈的對比或轉折論點" },
-      { tag: "Conclusion", sentence: "To wrap up, it is utterly paramount that we urge immediate actions before unsound structural failures occur.", use: "用於結尾段落，呼籲行動並總結核心訴求" }
+      { tag: "Conclusion", sentence: "To wrap up, it is utterly paramount that we urge immediate actions before unsound structural failures occur.", use: "用於結尾段落，呼籲行動並總結核心诉求" }
     ];
 
     const typeColors = {
@@ -293,6 +311,7 @@
       "v./n.": "bg-orange-500/10 text-orange-400 border border-orange-500/20"
     };
 
+    // ==================== 🛠️ 單字彈窗邏輯 ====================
     function openAddWordModal() {
       document.getElementById("add-word-modal").classList.remove("hidden");
       document.getElementById("modal-word-input").focus();
@@ -303,56 +322,34 @@
       document.getElementById("btn-status-text").innerText = "確認新增";
     }
 
-    function saveToLocalStorage() {
-      try {
-        localStorage.setItem("s5_vocab_data", JSON.stringify(wordsData));
-      } catch(e) {
-        console.error("寫入在地快取受限", e);
-      }
-    }
-
     async function submitNewWord() {
       const inputEl = document.getElementById("modal-word-input");
       const statusText = document.getElementById("btn-status-text");
       const rawWord = inputEl.value.trim();
-      
       if (rawWord === "") return;
       
       statusText.innerText = "多重詞義檢索中...";
-      let finalType = "n.";
-      let finalDef = "自訂新單字";
+      let finalType = "n."; let finalDef = "自訂新單字";
       
       try {
         const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(rawWord)}&langpair=en|zh-HK`);
         const data = await response.json();
-        
         if (data && data.responseData) {
           let uniqueMeanings = new Set();
-          
           if (data.responseData.translatedText) {
             let primary = data.responseData.translatedText.trim();
             if (primary.toLowerCase() !== rawWord.toLowerCase()) {
-              primary.split(/[,，;；/、]/).forEach(m => {
-                let clean = m.trim();
-                if (clean) uniqueMeanings.add(clean);
-              });
+              primary.split(/[,，;；/、]/).forEach(m => { let clean = m.trim(); if (clean) uniqueMeanings.add(clean); });
             }
           }
-          
           if (data.matches && Array.isArray(data.matches)) {
             data.matches.slice(0, 5).forEach(match => {
               let text = match.translation.trim();
               if (text.toLowerCase() !== rawWord.toLowerCase()) {
-                text.split(/[,，;；/、]/).forEach(m => {
-                  let clean = m.trim();
-                  if (clean && clean.length < 12 && !/[a-zA-Z]/.test(clean)) {
-                    uniqueMeanings.add(clean);
-                  }
-                });
+                text.split(/[,，;；/、]/).forEach(m => { let clean = m.trim(); if (clean && clean.length < 12 && !/[a-zA-Z]/.test(clean)) uniqueMeanings.add(clean); });
               }
             });
           }
-          
           if (uniqueMeanings.size > 0) {
             finalDef = Array.from(uniqueMeanings).slice(0, 4).join(" / ");
             let lowerWord = rawWord.toLowerCase();
@@ -362,18 +359,99 @@
             else if (lowerWord.endsWith("tion") || lowerWord.endsWith("ment") || lowerWord.endsWith("ity")) finalType = "n.";
           }
         }
-      } catch (error) {
-        console.log("雲端連線超時");
-      }
+      } catch (error) { console.log("網絡接口延遲"); }
 
       wordsData.unshift({ word: rawWord, type: finalType, def: finalDef });
-      saveToLocalStorage(); 
+      try { localStorage.setItem("s5_vocab_data", JSON.stringify(wordsData)); } catch(e){}
       
       closeAddWordModal();
       document.getElementById("vocab-search-input").value = "";
       renderVocabList(wordsData);
     }
 
+    // ==================== 📝 新增：文法彈窗與平鋪卡片邏輯 ====================
+    function openAddGrammarModal() {
+      document.getElementById("add-grammar-modal").classList.remove("hidden");
+      document.getElementById("modal-g-title").focus();
+    }
+    
+    function closeAddGrammarModal() {
+      document.getElementById("add-grammar-modal").classList.add("hidden");
+      document.getElementById("modal-g-title").value = "";
+      document.getElementById("modal-g-formula").value = "";
+      document.getElementById("modal-g-example").value = "";
+      document.getElementById("modal-g-warning").value = "";
+    }
+
+    function submitNewGrammar() {
+      const title = document.getElementById("modal-g-title").value.trim();
+      const formula = document.getElementById("modal-g-formula").value.trim();
+      const example = document.getElementById("modal-g-example").value.trim();
+      const warning = document.getElementById("modal-g-warning").value.trim();
+
+      if (title === "" || formula === "" || example === "") {
+        alert("請完整填寫文法名稱、結構公式與例句！💡");
+        return;
+      }
+
+      // 包裝全新文法物件推進字庫
+      grammarData.unshift({
+        title: title,
+        tag: "Custom Note",
+        formula: formula,
+        example: example,
+        warning: warning // 可為空字串
+      });
+
+      // 永久快取入 localStorage 保險箱
+      try { localStorage.setItem("s5_grammar_data", JSON.stringify(grammarData)); } catch(e){}
+
+      closeAddGrammarModal();
+      renderGrammarList();
+    }
+
+    function renderGrammarList() {
+      const container = document.getElementById("grammar-list-container");
+      container.innerHTML = "";
+
+      grammarData.forEach(item => {
+        const card = document.createElement("div");
+        // 100% 複製原圖：頂部紫色 4px 粗邊橫條裝飾
+        card.className = "bg-card border border-t-4 border-t-indigo-500 rounded-2xl p-5 md:p-6 shadow-md space-y-4";
+        
+        // 判斷是否有填寫錯誤警告，若無，則動態隱藏該區塊不留空白
+        const warningHTML = item.warning ? `
+          <div class="bg-red-500/5 border border-red-500/10 rounded-xl p-3 flex items-start space-x-2">
+            <span class="text-red-400 text-xs">⚠️</span>
+            <div>
+              <p class="text-xs text-red-400 font-bold">Common Mistakes</p>
+              <p class="text-xs text-red-400/90 font-medium mt-0.5">${item.warning}</p>
+            </div>
+          </div>
+        ` : '';
+
+        card.innerHTML = `
+          <div class="flex items-center space-x-3">
+            <span class="text-sm font-bold text-title">${item.title}</span>
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-md bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">${item.tag}</span>
+          </div>
+          <div class="space-y-3.5 pl-1 text-sm text-desc leading-relaxed">
+            <div>
+              <p class="text-xs font-bold text-indigo-400 uppercase tracking-wider">📌 Structure Formula</p>
+              <p class="mt-1 bg-gray-900/20 p-3 rounded-xl border border-gray-500/20 font-mono text-xs text-title break-words">${item.formula}</p>
+            </div>
+            <div>
+              <p class="text-xs font-bold text-emerald-400 uppercase tracking-wider">📝 Example Sentence</p>
+              <p class="mt-1 text-title font-semibold italic">"${item.example}"</p>
+            </div>
+            ${warningHTML}
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // ==================== ☀️ 其餘基礎框架與環境配對 ====================
     function toggleTheme() {
       const body = document.body;
       const btn = document.getElementById("theme-toggle-btn");
@@ -395,6 +473,7 @@
       document.getElementById(`btn-${tabId}`).classList.add('tab-active');
 
       if (tabId === 'match') initMatchGame();
+      if (tabId === 'grammar') renderGrammarList();
       if (tabId === 'writing') { renderWritingSentences(); selectStructure('argumentative'); }
     }
 
@@ -541,9 +620,10 @@
     }
 
     window.addEventListener("DOMContentLoaded", () => {
-      initWordsPayload();
+      initPayloads();
       document.getElementById("btn-vocab").classList.add("tab-active");
       renderVocabList(wordsData);
+      renderGrammarList(); // 預先生成文法卡片
     });
   </script>
 </body>
