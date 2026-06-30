@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title> DSE ENGLISH</title>
+  <title>S5 英文考試重點複習</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
   <style>
@@ -225,7 +225,6 @@
   </div>
 
   <script>
-    // 基礎核心字庫
     const defaultWords = [
       { word: "abcde", type: "n.", def: "測試單字 A" },
       { word: "abcdf", type: "v.", def: "測試單字 B" },
@@ -251,16 +250,22 @@
       { word: "vulgar", type: "adj.", def: "粗俗的 / 庸俗的" }
     ];
 
-    // 初始化字庫：優先從保險箱 (localStorage) 讀取，沒有的話才用預設字庫
     let wordsData = [];
-    try {
-      const saved = localStorage.getItem("s5_vocab_data");
-      if (saved) {
-        wordsData = JSON.parse(saved);
-      } else {
-        wordsData = [...defaultWords];
+
+    // 核心修復：極致安全的加載邏輯，防堵任何因為隱私機制導致列表空置的意外
+    function initWordsPayload() {
+      try {
+        const saved = localStorage.getItem("s5_vocab_data");
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            wordsData = parsed;
+            return;
+          }
+        }
+      } catch(e) {
+        console.log("LocalStorage 讀取被環境阻擋");
       }
-    } catch(e) {
       wordsData = [...defaultWords];
     }
 
@@ -298,12 +303,11 @@
       document.getElementById("btn-status-text").innerText = "確認新增";
     }
 
-    // 儲存字庫到 localStorage 的輔助函式
     function saveToLocalStorage() {
       try {
         localStorage.setItem("s5_vocab_data", JSON.stringify(wordsData));
       } catch(e) {
-        console.error("儲存失敗", e);
+        console.error("寫入在地快取受限", e);
       }
     }
 
@@ -359,10 +363,9 @@
           }
         }
       } catch (error) {
-        console.log("網絡接口延遲");
+        console.log("雲端連線超時");
       }
 
-      // 插入新單字，並同步呼叫存檔與渲染
       wordsData.unshift({ word: rawWord, type: finalType, def: finalDef });
       saveToLocalStorage(); 
       
@@ -404,7 +407,7 @@
     function renderVocabList(data) {
       const container = document.getElementById("vocab-list");
       container.innerHTML = "";
-      if(data.length === 0) {
+      if(!data || data.length === 0) {
         container.innerHTML = `<div class="text-center py-12 text-gray-600 text-sm">找不到相對應的英文單字...</div>`;
         return;
       }
@@ -473,4 +476,75 @@
       if (selectedEnCard && selectedZhCard) {
         const en = selectedEnCard; const zh = selectedZhCard;
         if (en.id === zh.id) {
-          en.el.className = en.el.className.replace('border-indigo-500', '') + ' border-emerald-500 bg-emerald-500/10 text-emerald-4
+          en.el.className = en.el.className.replace('border-indigo-500', '') + ' border-emerald-500 bg-emerald-500/10 text-emerald-400';
+          en.el.querySelector('span:last-child').innerText = '✅ 正確'; en.el.querySelector('span:last-child').className = 'text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-md font-bold';
+          zh.el.className = zh.el.className.replace('border-indigo-500', '') + ' border-emerald-500 bg-emerald-500/10 text-emerald-400';
+          zh.el.querySelector('span:last-child').innerText = '✅ 正確'; zh.el.querySelector('span:last-child').className = 'text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-md font-bold';
+          score += 20; updateScoreUI();
+          setTimeout(() => { en.el.style.opacity = '0'; en.el.style.pointerEvents = 'none'; zh.el.style.opacity = '0'; zh.el.style.pointerEvents = 'none'; }, 600);
+        } else {
+          en.el.className = en.el.className.replace('border-indigo-500', '') + ' border-red-500 bg-red-500/10 text-red-400';
+          en.el.querySelector('span:last-child').innerText = '❌ 錯誤'; en.el.querySelector('span:last-child').className = 'text-[10px] bg-red-500/20 text-red-400 px-2 py-0.5 rounded-md font-bold';
+          zh.el.className = zh.el.className.replace('border-indigo-500', '') + ' border-red-500 bg-red-500/10 text-red-400';
+          zh.el.querySelector('span:last-child').innerText = '❌ 錯誤'; zh.el.querySelector('span:last-child').className = 'text-[10px] bg-red-500/20 text-red-400 px-2 py-0.5 rounded-md font-bold';
+          setTimeout(() => {
+            en.el.className = en.el.className.replace('border-red-500', '').replace('bg-red-500/10', '').replace('text-red-400', '') + ' border-gray-800 text-gray-300';
+            en.el.querySelector('span:last-child').innerText = 'Word'; en.el.querySelector('span:last-child').className = 'text-[10px] bg-gray-500/10 text-gray-500 px-2 py-0.5 rounded-md font-bold uppercase tracking-wider';
+            zh.el.className = zh.el.className.replace('border-red-500', '').replace('bg-red-500/10', '').replace('text-red-400', '') + ' border-gray-800 text-gray-300';
+            zh.el.querySelector('span:last-child').innerText = 'Def'; zh.el.querySelector('span:last-child').className = 'text-[10px] bg-gray-500/10 text-gray-500 px-2 py-0.5 rounded-md font-bold uppercase tracking-wider';
+          }, 800);
+        }
+        selectedEnCard = null; selectedZhCard = null;
+      }
+    }
+
+    function updateScoreUI() {
+      document.getElementById("match-score-text").innerText = score;
+      const circlePath = document.getElementById("score-circle-path");
+      circlePath.setAttribute("stroke-dasharray", `${Math.min(score, 100)}, 100`);
+    }
+
+    function selectStructure(type) {
+      ['argumentative', 'proposal', 'story'].forEach(t => {
+        const card = document.getElementById(`struct-${t}`); const badge = document.getElementById(`badge-${t}`);
+        card.className = "bg-card border-2 border-transparent rounded-2xl p-5 cursor-pointer transition-all shadow-md hover:border-gray-500/50";
+        badge.className = "text-[9px] bg-gray-500/20 text-gray-500 font-black px-2 py-0.5 rounded-md uppercase tracking-wider";
+        badge.innerText = "Structure";
+      });
+      const activeCard = document.getElementById(`struct-${type}`); const activeBadge = document.getElementById(`badge-${type}`);
+      activeCard.className = "bg-card border-2 border-indigo-500 rounded-2xl p-5 cursor-pointer transition-all shadow-md";
+      activeBadge.className = "text-[9px] bg-indigo-500 text-white font-black px-2 py-0.5 rounded-md uppercase tracking-wider";
+      activeBadge.innerText = "Active";
+      document.getElementById("structure-detail-text").innerText = symmetricTenses[type];
+    }
+
+    function renderWritingSentences() {
+      const container = document.getElementById("writing-sentences-container");
+      container.innerHTML = "";
+      writingSentences.forEach(item => {
+        const card = document.createElement("div");
+        card.className = "bg-card border rounded-xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-3 hover:border-gray-500/50 transition-all";
+        card.innerHTML = `
+          <div class="space-y-1">
+            <div class="flex items-center space-x-2">
+              <span class="text-xs bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 font-bold px-2.5 py-0.5 rounded-md">${item.tag}</span>
+              <p class="text-xs text-gray-500">✨ ${item.use}</p>
+            </div>
+            <p class="text-sm font-semibold text-title italic">"${item.sentence}"</p>
+          </div>
+          <button onclick="navigator.clipboard.writeText('${item.sentence.replace(/'/g, "\\'")}'); alert('已成功複製高分金句！📋')" class="text-xs bg-gray-500/10 text-desc border border-gray-500/20 px-3 py-1.5 rounded-xl hover:bg-indigo-500 hover:text-white transition-all self-start md:self-center font-medium">
+            📋 複製金句
+          </button>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      initWordsPayload();
+      document.getElementById("btn-vocab").classList.add("tab-active");
+      renderVocabList(wordsData);
+    });
+  </script>
+</body>
+</html>
