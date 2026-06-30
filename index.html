@@ -104,7 +104,6 @@
     </div>
 
     <div id="content-grammar" class="hidden space-y-6 tab-content">
-      
       <button onclick="openAddGrammarModal()" class="w-full bg-indigo-600/5 border-2 border-dashed border-indigo-500/40 rounded-2xl flex items-center justify-center text-indigo-400 hover:border-indigo-500 hover:bg-indigo-600/10 transition-all group py-5 shadow-sm">
         <span class="text-lg font-bold group-hover:scale-105 transition-transform">+ 新增自訂文法筆記</span>
       </button>
@@ -181,6 +180,32 @@
     </div>
   </div>
 
+  <div id="vocab-action-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+    <div class="bg-[#111827] border border-gray-800 rounded-2xl max-w-sm w-full p-6 shadow-2xl space-y-4 text-left">
+      <div class="flex justify-between items-start">
+        <div>
+          <h3 id="action-modal-title" class="text-lg font-black text-indigo-400 tracking-wide">Word Detail</h3>
+          <p id="action-modal-def" class="text-xs text-gray-400 mt-0.5 leading-normal"></p>
+        </div>
+        <button onclick="closeVocabActionModal()" class="text-gray-500 hover:text-white text-sm font-bold px-1">✕</button>
+      </div>
+      
+      <div class="space-y-1.5">
+        <label class="block text-[11px] font-bold text-emerald-400 uppercase tracking-wider">📝 Sample Sentence (自訂專屬例句)</label>
+        <textarea id="action-modal-sentence-input" rows="3" class="w-full bg-gray-900 border border-gray-800 rounded-xl px-3 py-2 text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 leading-relaxed text-[15px]" placeholder="Type your sample sentence for this vocabulary here..."></textarea>
+      </div>
+
+      <div class="flex justify-between items-center pt-2 border-t border-gray-800/60">
+        <button id="action-modal-delete-btn" class="px-3 py-2 bg-red-600/10 border border-red-500/20 text-xs font-semibold text-red-400 rounded-lg hover:bg-red-600 hover:text-white transition-all shadow-sm">
+          🗑️ 刪除此單字
+        </button>
+        <button id="action-modal-save-btn" class="px-4 py-2 bg-emerald-600 text-xs font-semibold text-white rounded-lg hover:bg-emerald-500 transition-all shadow-md">
+          💾 儲存例句
+        </button>
+      </div>
+    </div>
+  </div>
+
   <div id="add-grammar-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
     <div class="bg-[#111827] border border-gray-800 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 text-left overflow-y-auto max-h-[90vh]">
       <div>
@@ -217,7 +242,6 @@
   </div>
 
   <script>
-    // 1. 單字庫初始數據
     const defaultWords = [
       { word: "abcde", type: "n.", def: "測試單字 A" },
       { word: "abcdf", type: "v.", def: "測試單字 B" },
@@ -243,7 +267,6 @@
       { word: "vulgar", type: "adj.", def: "粗俗的 / 庸俗的" }
     ];
 
-    // 2. 文法庫初始內置數據
     const defaultGrammar = [
       {
         title: "Inversion (倒裝句結構)",
@@ -263,10 +286,9 @@
 
     let wordsData = [];
     let grammarData = [];
+    let currentlyActiveWordIndex = null; // 追蹤目前正在編輯例句或刪除的單字索引
 
-    // 極致安全的資料快取加載邏輯
     function initPayloads() {
-      // 載入單字
       try {
         const savedWords = localStorage.getItem("s5_vocab_data");
         if (savedWords) {
@@ -276,7 +298,6 @@
         } else { wordsData = [...defaultWords]; }
       } catch(e) { wordsData = [...defaultWords]; }
 
-      // 載入文法
       try {
         const savedGrammar = localStorage.getItem("s5_grammar_data");
         if (savedGrammar) {
@@ -296,7 +317,7 @@
     const writingSentences = [
       { tag: "Introduction", sentence: "It is widely acknowledged that adversity can either break an individual or craft a titan.", use: "用於議論文或論述文開頭引出背景" },
       { tag: "Body Paragraph", sentence: "In stark contrast to the common perception, data suggests we shouldn't undercut local authentic markets.", use: "用於承上啟下，提出強烈的對比或轉折論點" },
-      { tag: "Conclusion", sentence: "To wrap up, it is utterly paramount that we urge immediate actions before unsound structural failures occur.", use: "用於結尾段落，呼籲行動並總結核心诉求" }
+      { tag: "Conclusion", sentence: "To wrap up, it is utterly paramount that we urge immediate actions before unsound structural failures occur.", use: "用於結尾段落，呼籲行動並總結核心訴求" }
     ];
 
     const typeColors = {
@@ -311,7 +332,7 @@
       "v./n.": "bg-orange-500/10 text-orange-400 border border-orange-500/20"
     };
 
-    // ==================== 🛠️ 單字彈窗邏輯 ====================
+    // ==================== 🛠️ 單字基礎彈窗邏輯 ====================
     function openAddWordModal() {
       document.getElementById("add-word-modal").classList.remove("hidden");
       document.getElementById("modal-word-input").focus();
@@ -361,7 +382,8 @@
         }
       } catch (error) { console.log("網絡接口延遲"); }
 
-      wordsData.unshift({ word: rawWord, type: finalType, def: finalDef });
+      // 預設追加 sampleSentence 欄位為空字串
+      wordsData.unshift({ word: rawWord, type: finalType, def: finalDef, sampleSentence: "" });
       try { localStorage.setItem("s5_vocab_data", JSON.stringify(wordsData)); } catch(e){}
       
       closeAddWordModal();
@@ -369,12 +391,64 @@
       renderVocabList(wordsData);
     }
 
-    // ==================== 📝 新增：文法彈窗與平鋪卡片邏輯 ====================
+    // ==================== 🔧 新增：點擊三角形彈窗、刪除與例句歷史載入保存邏輯 ====================
+    function openVocabActionModal(index) {
+      currentlyActiveWordIndex = index;
+      const targetVocab = wordsData[index];
+
+      // 配置彈窗標題與翻譯資訊
+      document.getElementById("action-modal-title").innerText = targetVocab.word;
+      document.getElementById("action-modal-def").innerText = `[${targetVocab.type}] ${targetVocab.def}`;
+      
+      // IF and ONLY IF 再次點開時：加載該單字之前儲存的例句歷史紀錄 (若無則留空)
+      document.getElementById("action-modal-sentence-input").value = targetVocab.sampleSentence || "";
+
+      // 綁定事件監聽器（防範重複疊加）
+      document.getElementById("action-modal-delete-btn").onclick = () => deleteVocabItem(index);
+      document.getElementById("action-modal-save-btn").onclick = () => saveSampleSentence(index);
+
+      document.getElementById("vocab-action-modal").classList.remove("hidden");
+    }
+
+    function closeVocabActionModal() {
+      document.getElementById("vocab-action-modal").classList.add("hidden");
+      document.getElementById("action-modal-sentence-input").value = "";
+      currentlyActiveWordIndex = null;
+    }
+
+    // 刪除特定單字核心函數
+    function deleteVocabItem(index) {
+      if (!confirm(`確定要刪除單字 "${wordsData[index].word}" 嗎？此動作將同步從配對挑戰中移除。`)) return;
+      
+      wordsData.splice(index, 1);
+      try { localStorage.setItem("s5_vocab_data", JSON.stringify(wordsData)); } catch(e){}
+      
+      closeVocabActionModal();
+      // 立刻刷新當前視圖列表
+      const searchVal = document.getElementById("vocab-search-input").value;
+      handleSearch(searchVal);
+    }
+
+    // 儲存或更新例句核心函數
+    function saveSampleSentence(index) {
+      const txt = document.getElementById("action-modal-sentence-input").value.trim();
+      wordsData[index].sampleSentence = txt;
+      
+      // 每一步變更即刻寫入 localStorage
+      try { localStorage.setItem("s5_vocab_data", JSON.stringify(wordsData)); } catch(e){}
+      
+      alert("例句已成功儲存！💾");
+      closeVocabActionModal();
+      
+      const searchVal = document.getElementById("vocab-search-input").value;
+      handleSearch(searchVal);
+    }
+
+    // ==================== 📝 文法彈窗與平鋪卡片邏輯 ====================
     function openAddGrammarModal() {
       document.getElementById("add-grammar-modal").classList.remove("hidden");
       document.getElementById("modal-g-title").focus();
     }
-    
     function closeAddGrammarModal() {
       document.getElementById("add-grammar-modal").classList.add("hidden");
       document.getElementById("modal-g-title").value = "";
@@ -394,16 +468,7 @@
         return;
       }
 
-      // 包裝全新文法物件推進字庫
-      grammarData.unshift({
-        title: title,
-        tag: "Custom Note",
-        formula: formula,
-        example: example,
-        warning: warning // 可為空字串
-      });
-
-      // 永久快取入 localStorage 保險箱
+      grammarData.unshift({ title: title, tag: "Custom Note", formula: formula, example: example, warning: warning });
       try { localStorage.setItem("s5_grammar_data", JSON.stringify(grammarData)); } catch(e){}
 
       closeAddGrammarModal();
@@ -413,13 +478,9 @@
     function renderGrammarList() {
       const container = document.getElementById("grammar-list-container");
       container.innerHTML = "";
-
       grammarData.forEach(item => {
         const card = document.createElement("div");
-        // 100% 複製原圖：頂部紫色 4px 粗邊橫條裝飾
         card.className = "bg-card border border-t-4 border-t-indigo-500 rounded-2xl p-5 md:p-6 shadow-md space-y-4";
-        
-        // 判斷是否有填寫錯誤警告，若無，則動態隱藏該區塊不留空白
         const warningHTML = item.warning ? `
           <div class="bg-red-500/5 border border-red-500/10 rounded-xl p-3 flex items-start space-x-2">
             <span class="text-red-400 text-xs">⚠️</span>
@@ -479,28 +540,45 @@
 
     function handleSearch(keyword) {
       const cleanKeyword = keyword.trim().toLowerCase();
-      const filtered = wordsData.filter(item => item.word.toLowerCase().startsWith(cleanKeyword) || item.def.includes(cleanKeyword));
-      renderVocabList(filtered);
+      // 同時支援根據陣列中原生的索引找尋數據對象
+      const filtered = wordsData.map((item, index) => ({...item, originalIndex: index}))
+                        .filter(item => item.word.toLowerCase().startsWith(cleanKeyword) || item.def.includes(cleanKeyword));
+      renderVocabList(filtered, true);
     }
 
-    function renderVocabList(data) {
+    function renderVocabList(data, isFiltered = false) {
       const container = document.getElementById("vocab-list");
       container.innerHTML = "";
       if(!data || data.length === 0) {
         container.innerHTML = `<div class="text-center py-12 text-gray-600 text-sm">找不到相對應的英文單字...</div>`;
         return;
       }
-      data.forEach(item => {
+      data.forEach((item, idx) => {
+        // 抓取真實單字數組的索引
+        const realIndex = isFiltered ? item.originalIndex : idx;
         const badgeColor = typeColors[item.type] || "bg-gray-500/10 text-gray-400";
-        const card = document.createElement("div");
-        card.className = "bg-card border rounded-xl p-4 flex items-center justify-between hover:border-indigo-500 transition-all group cursor-pointer";
-        card.innerHTML = `
-          <div class="flex items-center space-x-4">
-            <span class="text-lg font-bold text-title tracking-wide group-hover:text-indigo-400 transition-colors">${item.word}</span>
-            <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full ${badgeColor}">${item.type}</span>
-            <span class="text-sm text-desc pl-2">${item.def}</span>
+        
+        // 如果帶有自訂的專屬例句歷史，底部加載出精緻微小的灰色小指示，否則不顯示
+        const sentenceIndicatorHTML = item.sampleSentence ? `
+          <div class="mt-1.5 text-[11px] text-emerald-500/80 italic font-medium tracking-wide border-t border-gray-800/30 pt-1">
+            📖 Example Saved: "${item.sampleSentence.length > 40 ? item.sampleSentence.substring(0, 40)+'...' : item.sampleSentence}"
           </div>
-          <div class="text-gray-600 group-hover:text-gray-400 transition-colors text-xs">▼</div>
+        ` : '';
+
+        const card = document.createElement("div");
+        card.className = "bg-card border rounded-xl p-4 flex flex-col justify-center hover:border-indigo-500 transition-all group";
+        card.innerHTML = `
+          <div class="flex items-center justify-between w-full">
+            <div class="flex items-center space-x-4">
+              <span class="text-lg font-bold text-title tracking-wide group-hover:text-indigo-400 transition-colors">${item.word}</span>
+              <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full ${badgeColor}">${item.type}</span>
+              <span class="text-sm text-desc pl-2">${item.def}</span>
+            </div>
+            <button onclick="openVocabActionModal(${realIndex})" class="text-gray-600 hover:text-indigo-400 transition-colors text-xs p-2 select-none">
+              ▼
+            </button>
+          </div>
+          ${sentenceIndicatorHTML}
         `;
         container.appendChild(card);
       });
@@ -623,7 +701,7 @@
       initPayloads();
       document.getElementById("btn-vocab").classList.add("tab-active");
       renderVocabList(wordsData);
-      renderGrammarList(); // 預先生成文法卡片
+      renderGrammarList();
     });
   </script>
 </body>
