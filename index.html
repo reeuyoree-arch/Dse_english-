@@ -6,6 +6,11 @@
   <title>DSE ENGLISH</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+  
+  <!-- 🔥 引入 Firebase SDK 用於跨裝置雲端數據互聯 -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
   <style>
     body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; transition: background-color 0.3s ease, color 0.3s ease; -webkit-tap-highlight-color: transparent; position: relative; overflow-x: hidden; }
     .theme-dark { background-color: #0B0F19; color: #E5E7EB; }
@@ -21,7 +26,7 @@
     .theme-light .tab-active { border-bottom: 3px solid #4F46E5; color: #4F46E5; background-color: #EEF2FF; }
     .theme-light .bg-panel { background-color: rgba(255, 255, 255, 0.8); }
 
-    /* 🌸 參照 image_19fd35.png 高級像素風櫻花綻放引擎 */
+    /* 🌸 完美還原 image_1a8397.png 高清細膩像素櫻花引擎 */
     .sakura-bg {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -30,66 +35,75 @@
       overflow: hidden;
     }
 
-    /* 基礎像素顆粒樣式，用 box-shadow 組合出多層次花朵 */
     .pixel-flower {
       position: absolute;
-      width: 4px;
-      height: 4px;
+      width: 3px;
+      height: 3px;
       animation: bloomAndFall linear infinite;
       opacity: 0;
     }
 
-    /* 花型一：十字大綻放（粉瓣 + 白心 + 黃芯） */
+    /* 花型一：完美還原 image_1a8397.png 核心大菱形雙層綻放花簇（粉白漸變 + 璀璨金芯） */
     .flower-type-a {
-      background: #FFB7C5;
-      box-shadow: 
-        0 -4px 0 #FFB7C5, 0 -8px 0 #FF9AA2, -4px -4px 0 #FFB7C5, 4px -4px 0 #FFB7C5,
-        -4px 0 0 #FFB7C5, -8px 0 0 #FF9AA2, 4px 0 0 #FFB7C5, 8px 0 0 #FF9AA2,
-        0 4px 0 #FFB7C5, 0 8px 0 #FF9AA2, -4px 4px 0 #FFB7C5, 4px 4px 0 #FFB7C5,
-        /* 內側白色與中央黃色花芯 */
-        0 0 0 #FFF, -4px -0px 0 #FFF, 4px 0 0 #FFF, 0 -4px 0 #FFF, 0 4px 0 #FFF,
-        0 0 0 #FFD700;
+      background: #FFF5F7;
+      box-shadow:
+        /* 核心金黃花蕊 */
+        3px 0 0 #FFD700, -3px 0 0 #FFD700, 0 3px 0 #FFD700, 0 -3px 0 #FFD700,
+        /* 內層白粉色花冠 */
+        3px 3px 0 #FFF0F2, -3px -3px 0 #FFF0F2, 3px -3px 0 #FFF0F2, -3px 3px 0 #FFF0F2,
+        6px 0 0 #FFA6B9, -6px 0 0 #FFA6B9, 0 6px 0 #FFA6B9, 0 -6px 0 #FFA6B9,
+        /* 外圍深粉色漸變厚瓣結構 */
+        6px 3px 0 #FF8CA3, 6px -3px 0 #FF8CA3, -6px 3px 0 #FF8CA3, -6px -3px 0 #FF8CA3,
+        3px 6px 0 #FF8CA3, -3px 6px 0 #FF8CA3, 3px -6px 0 #FF8CA3, -3px -6px 0 #FF8CA3,
+        9px 0 0 #FF758F, -9px 0 0 #FF758F, 0 9px 0 #FF758F, 0 -9px 0 #FF758F,
+        6px 6px 0 #FF758F, -6px -6px 0 #FF758F, 6px -6px 0 #FF758F, -6px 6px 0 #FF758F;
     }
 
-    /* 花型二：四瓣散開型（對應 image_19fd35.png 右上角） */
+    /* 花型二：精緻十字型四瓣鏤空花瓣（對應圖中右上角與中左側結構） */
     .flower-type-b {
       background: transparent;
       box-shadow:
-        -4px -4px 0 #FFB7C5, -8px -4px 0 #FF9AA2, -4px -8px 0 #FF9AA2,
-        4px -4px 0 #FFB7C5, 8px -4px 0 #FF9AA2, 4px -8px 0 #FF9AA2,
-        -4px 4px 0 #FFB7C5, -8px 4px 0 #FF9AA2, -4px 8px 0 #FF9AA2,
-        4px 4px 0 #FFB7C5, 8px 4px 0 #FF9AA2, 4px 8px 0 #FF9AA2,
-        0 0 0 #FFD700; /* 中央單點黃芯 */
+        /* 中央點綴微白黃芯 */
+        0 0 0 #FFF, 0 -3px 0 #FFD700,
+        /* 四向對稱延伸的花瓣矩陣 */
+        -6px -6px 0 #FFA6B9, -9px -6px 0 #FF758F, -6px -9px 0 #FF758F, -9px -9px 0 #FF8CA3,
+        6px -6px 0 #FFA6B9, 9px -6px 0 #FF758F, 6px -9px 0 #FF758F, 9px -9px 0 #FF8CA3,
+        -6px 6px 0 #FFA6B9, -9px 6px 0 #FF758F, -6px 9px 0 #FF758F, -9px 9px 0 #FF8CA3,
+        6px 6px 0 #FFA6B9, 9px 6px 0 #FF758F, 6px 9px 0 #FF758F, 9px 9px 0 #FF8CA3;
     }
 
-    /* 花型三：小像素花苞/閃爍微粒 */
+    /* 花型三：圖中點綴的像素環境閃爍四瓣微粒 / 四散的小花蕾 */
     .flower-type-c {
-      background: #FFF;
-      box-shadow: 
-        0 -4px 0 #FF9AA2, -4px 0 0 #FF9AA2, 4px 0 0 #FF9AA2, 0 4px 0 #FF9AA2,
-        -4px -4px 0 #FFB7C5, 4px -4px 0 #FFB7C5, -4px 4px 0 #FFB7C5, 4px 4px 0 #FFB7C5;
+      background: #FFD700; /* 金黃芯 */
+      box-shadow:
+        0 -3px 0 #FFF, -3px 0 0 #FFF, 3px 0 0 #FFF, 0 3px 0 #FFF,
+        -3px -3px 0 #FFA6B9, 3px -3px 0 #FFA6B9, -3px 3px 0 #FFA6B9, 3px 3px 0 #FFA6B9;
     }
 
     @keyframes bloomAndFall {
       0% {
-        transform: translateY(-10px) translateX(0) scale(0);
+        transform: translateY(-20px) translateX(0) scale(0) rotate(0deg);
         opacity: 0;
       }
-      /* 在頂部15%的時間內完成 Blooming 綻放變大效果 */
-      15% {
-        transform: translateY(10vh) translateX(10px) scale(1.1);
+      /* 優雅微風原位綻放 */
+      12% {
+        transform: translateY(8vh) translateX(15px) scale(1.1) rotate(45deg);
         opacity: 0.95;
       }
-      30% {
-        transform: translateY(25vh) translateX(-15px) scale(1);
+      25% {
+        transform: translateY(22vh) translateX(-10px) scale(1) rotate(90deg);
         opacity: 0.9;
       }
-      65% {
-        transform: translateY(60vh) translateX(30px) scale(0.95);
+      50% {
+        transform: translateY(50vh) translateX(25px) scale(0.95) rotate(180deg);
         opacity: 0.85;
       }
+      75% {
+        transform: translateY(78vh) translateX(-15px) scale(0.85) rotate(270deg);
+        opacity: 0.75;
+      }
       100% {
-        transform: translateY(105vh) translateX(-10px) scale(0.7);
+        transform: translateY(105vh) translateX(5px) scale(0.65) rotate(360deg);
         opacity: 0;
       }
     }
@@ -100,14 +114,14 @@
   <!-- 櫻花背景容器 -->
   <div class="sakura-bg" id="sakura-container"></div>
 
-  <!-- 主功能容器，提至 z-10 以防櫻花遮擋文字 -->
+  <!-- 主功能容器 -->
   <div class="max-w-4xl mx-auto px-4 pt-12 relative z-10">
     
     <!-- 大標題與歡迎語 -->
     <div class="text-center mb-8 relative">
       <h1 class="text-3xl font-black text-indigo-400 tracking-wide uppercase">DSE ENGLISH</h1>
       <p class="text-sm text-gray-500 mt-2 font-bold tracking-widest">WELCOME TO CITYU</p>
-      <button onclick="toggleTheme()" id="theme-toggle-btn" class="absolute right-2 top-2 p-2 bg-gray-800/80 rounded-full border border-gray-700/50 text-gray-400 hover:text-white transition-all duration-200">✦</button>
+      <button onclick="toggleTheme()" id="theme-toggle-btn" class="absolute right-2 top-2 p-2 bg-gray-800/80 rounded-full border border-gray-700/50 text-gray-400 hover:text-white transition-all duration-200">☀️</button>
     </div>
 
     <!-- 導航分頁列 -->
@@ -259,7 +273,7 @@
       <div class="bg-card border rounded-2xl p-5 md:p-6 space-y-4 relative">
         <h3 class="text-sm font-black text-title flex items-center space-x-2"><span>🔍</span><span>Search All JUPAS Programmes</span></h3>
         <div class="relative">
-          <input oninput="searchJupasUniversal(this.value)" id="jupas-search-field" type="text" class="w-full bg-gray-900/60 border border-gray-800 rounded-xl py-3 pl-4 pr-10 text-sm placeholder-gray-600 focus:outline-none focus:border-indigo-500 text-[15px]" placeholder="輸入任意 JUPAS 商科、理科、工程或文科代碼 (如 JS1211、JS2410、JS3636、JS4501、JS6004、JS8001、JS9009)...">
+          <input oninput="searchJupasUniversal(this.value)" id="jupas-search-field" type="text" class="w-full bg-gray-900/60 border border-gray-800 rounded-xl py-3 pl-4 pr-10 text-sm placeholder-gray-600 focus:outline-none focus:border-indigo-500 text-[15px]" placeholder="輸入任意 JUPAS 商科、理科、工程或文科代碼 (如 JS1211、JS2410、JS3636、JS6456)...">
           <span class="absolute inset-y-0 right-4 flex items-center text-gray-600">🔎</span>
         </div>
         <div id="jupas-suggestion-box" class="hidden absolute left-4 right-4 bg-[#111827] border border-gray-800 rounded-xl shadow-2xl max-h-60 overflow-y-auto z-40 divide-y divide-gray-800/40 p-1"></div>
@@ -280,7 +294,7 @@
   <!-- 彈出式視窗組 -->
   <div id="add-word-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
     <div class="bg-[#111827] border border-gray-800 rounded-2xl max-w-sm w-full p-6 shadow-2xl space-y-4 text-left">
-      <div><h3 class="text-base font-bold text-gray-100">新增複習單字</h3><p class="text-xs text-gray-500 mt-1">輸入英文後，系統將自動提取多重釋義，並永久儲存在此瀏覽器中。</p></div>
+      <div><h3 class="text-base font-bold text-gray-100">新增複習單字</h3><p class="text-xs text-gray-500 mt-1">輸入英文後，系統將自動提取多重釋義，並透過雲端永久互聯同步。</p></div>
       <div><label class="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">English Word</label><input id="modal-word-input" type="text" class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 text-sm text-gray-200 placeholder-gray-600 text-[16px]" placeholder="例如: fine..." autocomplete="off"></div>
       <div class="flex justify-end space-x-2 pt-2"><button onclick="closeAddWordModal()" class="px-4 py-2 bg-gray-800 text-xs font-semibold text-gray-400 rounded-lg hover:text-white">取消</button><button id="modal-submit-btn" onclick="submitNewWord()" class="px-4 py-2 bg-indigo-600 text-xs font-semibold text-white rounded-lg hover:bg-indigo-500"><span id="btn-status-text">確認新增</span></button></div>
     </div>
@@ -313,31 +327,70 @@
       <div class="space-y-3 text-sm">
         <div><label class="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1">Tag 分類標籤</label><input id="modal-w-tag" type="text" class="w-full bg-gray-900 border border-gray-800 rounded-xl px-3 py-2.5 text-gray-200 text-[15px]" placeholder="例如: Introduction"></div>
         <div><label class="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1">High-Scoring Template 金句主體</label><textarea id="modal-w-sentence" rows="2" class="w-full bg-gray-900 border border-gray-800 rounded-xl px-3 py-2 text-gray-200 font-semibold italic text-xs"></textarea></div>
-        <div><label class="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1">Usage 應用場景描述</label><input id="modal-w-use" type="text" class="w-full bg-gray-900 border border-gray-800 rounded-xl px-3 py-2.5 text-gray-200 text-[15px]"></div>
+        <div><label class="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1">Usage 應用場景描述</label><input id="modal-w-use" type="text" class="w-full bg-gray-900 border border-gray-800 rounded-xl px-3 py-2.5 text-gray-200 text-[15px]" placeholder="應用場景"></div>
       </div>
       <div class="flex justify-end space-x-2 pt-2"><button onclick="closeAddWritingModal()" class="px-4 py-2 bg-gray-800 text-xs font-semibold text-gray-400 rounded-lg hover:text-white">取消</button><button onclick="submitNewWritingSentence()" class="px-4 py-2 bg-indigo-600 text-xs font-semibold text-white rounded-lg hover:bg-indigo-500">確認建立</button></div>
     </div>
   </div>
 
   <script>
+    // ==========================================
+    // ⚙️ FIREBASE 跨裝置雲端即時連動設定區 (已注入專屬金鑰)
+    // ==========================================
+    const firebaseConfig = {
+      apiKey: "AIzaSyAfUQPCLpBeeFSD5bV0xzElV6rs-t-wRFA",
+      authDomain: "dseenglish-e9d6f.firebaseapp.com",
+      databaseURL: "https://dseenglish-e9d6f-default-rtdb.firebaseio.com",
+      projectId: "dseenglish-e9d6f",
+      storageBucket: "dseenglish-e9d6f.firebasestorage.app",
+      messagingSenderId: "17620827653",
+      appId: "1:17620827653:web:da83011e8cc9fd2c49e66c"
+    };
+
+    let db = null; let isFirebaseReady = false;
+    if (firebaseConfig.apiKey !== "YOUR_API_KEY") {
+      firebase.initializeApp(firebaseConfig); db = firebase.database(); isFirebaseReady = true;
+      console.log("🚀 Firebase Realtime Network Connected Successfully.");
+    } else {
+      console.warn("⚠️ Firebase Credentials not set. Running in local browser replication mode.");
+    }
+
+    // ==========================================
+    // 📚 擴充至 8 組高質量 DSE 考點預設文法庫
+    // ==========================================
     const defaultWords = [
-      { word: "removal", type: "n.", def: "去除 / 除雪" }, { word: "sum", type: "n.", def: "總和 / 蘇姆" },
-      { word: "abcde", type: "n.", def: "測試單字 A" }, { word: "abcdf", type: "v.", def: "測試單字 B" },
-      { word: "abcty", type: "adj.", def: "測試單字 C" }, { word: "abhoj", type: "adv.", def: "測試單字 D" },
+      { word: "removal", type: "n.", def: "去除 / 移除" }, { word: "sum", type: "n.", def: "總和 / 核心" },
       { word: "adhered", type: "v.", def: "堅持 / 遵守" }, { word: "adversity", type: "n.", def: "逆境 / 不幸" }
     ];
 
     const defaultGrammar = [
       { title: "Inversion (倒裝句結構)", tag: "Core Structure", formula: "Negative Adverb + Auxiliary Verb + Subject + Main Verb", example: "Not only did he pass the exam, but he also secured a scholarship.", warning: "忘記將助動詞提至主語前方。" },
-      { title: "Relative Clauses (關係從句進階用法)", tag: "Sentence Variety", formula: "Noun + Preposition + Relative Pronoun", example: "The adversity through which she persevered defined her character.", warning: "介系詞選用錯誤。" }
+      { title: "Relative Clauses (關係從句進階)", tag: "Sentence Variety", formula: "Noun + Preposition + Relative Pronoun", example: "The adversity through which she persevered defined her character.", warning: "介系詞選用錯誤。" },
+      { title: "Subjunctive Mood (虛擬語氣)", tag: "Advanced Tense", formula: "If + Subject + Had + V3, Subject + Would Have + V3", example: "Had the authorities acted promptly, the calamity would have been averted.", warning: "錯寫為 If he would have..." },
+      { title: "Split Infinitives (不定式分裂)", tag: "Stylistic Flair", formula: "to + Adverb + Verb Base Form", example: "The goal is to substantially improve urban microgrids.", warning: "過度插入長副詞導致語意支離破碎。" },
+      { title: "Double Comparatives (雙重比較級)", tag: "Rhetorical Effect", formula: "The + Comparative..., the + Comparative...", example: "The more interconnected the information is, the more efficient the system becomes.", warning: "後半句遺漏定冠詞 The。" },
+      { title: "Anaphoric Reference (前向照應)", tag: "Cohesion", formula: "Noun Phrase ... Pronoun / Demonstrative Substitution", example: "The EcoBike initiative scales quickly; this helps lower emissions.", warning: "指代不明確（如使用不精準的 it）。" },
+      { title: "Participial Phrases (分詞短語修飾)", tag: "Syntactic Density", formula: "Present/Past Participle, Subject + Verb + Object", example: "Confronted with mounting criticism, the council revised the transit budget.", warning: "懸空分詞（分詞的主語與主句主語不一致）。" },
+      { title: "Cleft Sentences (分裂句強調)", tag: "Emphasis Technique", formula: "It is/was + Emphasized Element + That/Who + Rest of Sentence", example: "It was the innovative solar integration that drove the product's market success.", warning: "錯將 That 替換為 Because。" }
     ];
 
+    // ==========================================
+    // ✍️ 擴充至 8 組高分 DSE 寫作金句庫
+    // ==========================================
     const defaultWritingSentences = [
-      { tag: "Introduction", sentence: "It is widely acknowledged that adversity can either break an individual or craft a titan.", use: "用於議論文或論述文開頭引出背景" },
-      { tag: "Body Paragraph", sentence: "In stark contrast to the common perception, data suggests we shouldn't undercut local authentic markets.", use: "用於承上啟下，提出強烈的對比或轉折論點" }
+      { tag: "Introduction", sentence: "It is widely acknowledged that adversity can either break an individual or craft a titan.", use: "用於議論文開頭引出大眾核心背景" },
+      { tag: "Body Paragraph", sentence: "In stark contrast to common perception, empirical evidence suggests we shouldn't undercut local authentic markets.", use: "用於承上啟下，引出強烈駁論或對比反轉" },
+      { tag: "Conclusion", sentence: "To wrap up, only when a comprehensive framework is established can sustainable long-term yields be materialized.", use: "結尾點睛，利用倒裝句提升總結結構高度" },
+      { tag: "Problem Analysis", sentence: "The crux of the matter lies not within short-term fluctuations, but rather in systemic infrastructural deficits.", use: "精準剖析社會或環境問題的本質根源" },
+      { tag: "Recommendation", sentence: "A multi-pronged approach, consisting of policy overhaul and grassroots participation, is of paramount significance.", use: "提出具體高分建議措施，代替 simple suggestions" },
+      { tag: "Impact Statement", sentence: "The profound implications of this technology extend far beyond economic metrics, triggering a paradigm shift in urban living.", use: "用來深度探討某項變革或科技帶來的長遠影響" },
+      { tag: "Counter-Argument", sentence: "While critics might dismiss this layout as idealistic, its feasibility is firmly anchored in recent pilot studies.", use: "駁論段落黃金起首句，先讓步後強力反駁" },
+      { tag: "Call to Action", sentence: "Therefore, it is high time that stakeholders joined hands to prevent this precarious situation from deteriorating further.", use: "文章結尾發出強烈呼籲，激發讀者共鳴" }
     ];
 
-    // 全港九間 JUPAS 院校所有學科官方數據庫清單
+    // ==========================================
+    // 🎓 補全：全港九間 JUPAS 參與院校全學科大數據
+    // ==========================================
     const realJupasDatabase = [
       // === CITYU (香港城市大學) ===
       { code: "JS1211", institution: "City University of Hong Kong (CityU)", title: "BEng Biomedical Engineering 生物醫學工程", quota: 35, uq: 38.0, median: 39.0 },
@@ -374,7 +427,7 @@
       { code: "JS1102", institution: "City University of Hong Kong (CityU)", title: "BSocSc International Relations and Global Affairs 國際關係", quota: 40, uq: 23.5, median: 24.0 },
       { code: "JS1103", institution: "City University of Hong Kong (CityU)", title: "BA Chinese and History 中文及歷史文學士", quota: 45, uq: 35.5, median: 36.0 },
       { code: "JS1104", institution: "City University of Hong Kong (CityU)", title: "BA English 英文文學士", quota: 50, uq: 29.5, median: 32.0 },
-      { code: "JS1106", institution: "City University of Hong Kong (CityU)", title: "Media and Communication 媒體與傳播學組", quota: 65, uq: 20.0, median: 20.5 },
+      { code: "JS1106", institution: "Media and Communication 媒體與傳播學組", quota: 65, uq: 20.0, median: 20.5 },
       { code: "JS1108", institution: "City University of Hong Kong (CityU)", title: "BSocSc Public Affairs and Management 公共事務與管理", quota: 45, uq: 23.0, median: 23.5 },
       { code: "JS1109", institution: "City University of Hong Kong (CityU)", title: "BA Linguistics and Language Applications 語言學及語言應用", quota: 30, uq: 30.0, median: 29.5 },
       { code: "JS1111", institution: "City University of Hong Kong (CityU)", title: "BSocSc Crime Science 犯罪科學社會科學學士", quota: 35, uq: 23.0, median: 23.0 },
@@ -407,7 +460,7 @@
       { code: "JS2310", institution: "Hong Kong Baptist University (HKBU)", title: "BComm (Hons) (Journalism / Public Relations / Advertising)", quota: 75, uq: 22.0, median: 22.99 },
       { code: "JS2330", institution: "Hong Kong Baptist University (HKBU)", title: "BA (Hons) in Film and Television 電影電視文學士", quota: 50, uq: 20.0, median: 21.83 },
       { code: "JS2340", institution: "Hong Kong Baptist University (HKBU)", title: "BFA (Hons) in Acting for Global Screen 全球屏幕演技藝術學士", quota: 20, uq: 18.0, median: 18.55 },
-      { code: "JS2370", institution: "Hong Kong Baptist University (HKBU)", title: "BComm (Hons) in Game Design and Animation 遊戲設計及動畫", quota: 40, uq: 20.0, median: 21.85 },
+      { code: "JS2370", institution: "Hong Kong Baptist University (HKBU)", title: "BFA (Hons) in Digital Futures and Humanities 數字未來與人文", quota: 40, uq: 20.0, median: 21.85 },
       { code: "JS2410", institution: "Hong Kong Baptist University (HKBU)", title: "Bachelor of Chinese Medicine and BSc (Hons) Biomedical Science 中醫藥學士", quota: 35, uq: 32.0, median: 32.27 },
       { code: "JS2420", institution: "Hong Kong Baptist University (HKBU)", title: "Bachelor of Pharmacy (Hons) in Chinese Medicine 中藥藥劑學士", quota: 25, uq: 27.0, median: 27.04 },
       { code: "JS2510", institution: "Hong Kong Baptist University (HKBU)", title: "Bachelor of Science (Hons) 理學士(榮譽) 大類收生", quota: 160, uq: 22.0, median: 20.15 },
@@ -710,25 +763,32 @@
     ];
 
     const institutionPrefixMap = {
-      "1": "City University of Hong Kong (CityU)",
-      "2": "Hong Kong Baptist University (HKBU)",
-      "3": "The Hong Kong Polytechnic University (PolyU)",
-      "4": "The Chinese University of Hong Kong (CUHK)",
-      "5": "Hong Kong University of Science and Technology (HKUST)",
-      "6": "The University of Hong Kong (HKU)",
-      "7": "The Education University of Hong Kong (EdUHK)",
-      "8": "The Education University of Hong Kong (EdUHK)",
+      "1": "City University of Hong Kong (CityU)", "2": "Hong Kong Baptist University (HKBU)",
+      "3": "The Hong Kong Polytechnic University (PolyU)", "4": "The Chinese University of Hong Kong (CUHK)",
+      "5": "Hong Kong University of Science and Technology (HKUST)", "6": "The University of Hong Kong (HKU)",
+      "7": "The Education University of Hong Kong (EdUHK)", "8": "The Education University of Hong Kong (EdUHK)",
       "9": "Hong Kong Metropolitan University (HKMU)"
     };
 
     let wordsData = []; let grammarData = []; let writingData = []; let jupasUserRankList = [];
     let userDseRawSum = 0; let currentlyActiveWordIndex = null;
 
+    // ==========================================
+    // 🌐 跨裝置生命週期整合互聯模組
+    // ==========================================
     function initPayloads() {
       try { wordsData = localStorage.getItem("s5_vocab_data") ? JSON.parse(localStorage.getItem("s5_vocab_data")) : [...defaultWords]; } catch(e) { wordsData = [...defaultWords]; }
       try { grammarData = localStorage.getItem("s5_grammar_data") ? JSON.parse(localStorage.getItem("s5_grammar_data")) : [...defaultGrammar]; } catch(e) { grammarData = [...defaultGrammar]; }
       try { writingData = localStorage.getItem("s5_writing_data") ? JSON.parse(localStorage.getItem("s5_writing_data")) : [...defaultWritingSentences]; } catch(e) { writingData = [...defaultWritingSentences]; }
       try { jupasUserRankList = localStorage.getItem("s5_jupas_rank_list") ? JSON.parse(localStorage.getItem("s5_jupas_rank_list")) : []; } catch(e) { jupasUserRankList = []; }
+      
+      if (isFirebaseReady) {
+        db.ref("dse_app_data/words").on("value", snapshot => { if(snapshot.exists()) { wordsData = snapshot.val(); renderVocabList(wordsData); } });
+        db.ref("dse_app_data/grammar").on("value", snapshot => { if(snapshot.exists()) { grammarData = snapshot.val(); renderGrammarList(); } });
+        db.ref("dse_app_data/writing").on("value", snapshot => { if(snapshot.exists()) { writingData = snapshot.val(); renderWritingSentences(); } });
+        db.ref("dse_app_data/jupasRank").on("value", snapshot => { if(snapshot.exists()) { jupasUserRankList = snapshot.val(); analyzeJupasAdmissions(); } });
+      }
+
       try {
         const savedScores = localStorage.getItem("s5_dse_saved_scores");
         if (savedScores) {
@@ -739,69 +799,41 @@
       } catch(e){}
     }
 
-    // ==================== 🌸 創造 image_19fd35.png 風格的像素櫻花組件 ====================
-    function generatePixelSakura() {
-      const container = document.getElementById("sakura-container");
-      const flowerCount = 24; // 調整合適密度以防視覺過度雜亂
-      
-      const types = ["flower-type-a", "flower-type-b", "flower-type-c"];
+    function syncCloud(path, data) { if (isFirebaseReady) { db.ref("dse_app_data/" + path).set(data); } }
 
+    // ==================== 🌸 還原 image_1a8397.png 櫻花生成引擎 ====================
+    function generatePixelSakura() {
+      const container = document.getElementById("sakura-container"); container.innerHTML = "";
+      const flowerCount = 28; const types = ["flower-type-a", "flower-type-b", "flower-type-c"];
       for (let i = 0; i < flowerCount; i++) {
-        const flower = document.createElement("div");
-        const chosenType = types[Math.floor(Math.random() * types.length)];
-        
-        flower.className = `pixel-flower ${chosenType}`;
-        flower.style.left = Math.random() * 95 + "vw";
-        flower.style.top = Math.random() * -10 + "px";
-        
-        // 分配不同的綻放和掉落時長
-        const duration = Math.random() * 7 + 7; // 7s ~ 14s
-        const delay = Math.random() * 10;
-        
-        flower.style.animationDuration = duration + "s";
-        flower.style.animationDelay = delay + "s";
-        
-        container.appendChild(flower);
+        const flower = document.createElement("div"); const chosenType = types[Math.floor(Math.random() * types.length)];
+        flower.className = `pixel-flower ${chosenType}`; flower.style.left = Math.random() * 96 + "vw"; flower.style.top = (Math.random() * -20) + "px";
+        const duration = Math.random() * 8 + 8; const delay = Math.random() * 12;
+        flower.style.animationDuration = duration + "s"; flower.style.animationDelay = delay + "s"; container.appendChild(flower);
       }
     }
 
     // ==================== 🎮 隨機配對核心交互邏輯 ====================
     let score = 0; let selectedEnCard = null; let selectedZhCard = null; let activePairsLeft = 5;
-
     function initMatchGame() {
       selectedEnCard = null; selectedZhCard = null;
       const enCol = document.getElementById("match-en-column"); const zhCol = document.getElementById("match-zh-column");
       enCol.innerHTML = ""; zhCol.innerHTML = "";
-      
-      const pool = [...wordsData].sort(() => 0.5 - Math.random()).slice(0, 5);
-      activePairsLeft = pool.length;
-
-      let ens = []; let zhs = [];
-      pool.forEach(w => { ens.push({id: w.word.toLowerCase(), text: w.word}); zhs.push({id: w.word.toLowerCase(), text: w.def}); });
+      const pool = [...wordsData].sort(() => 0.5 - Math.random()).slice(0, 5); activePairsLeft = pool.length;
+      let ens = []; let zhs = []; pool.forEach(w => { ens.push({id: w.word.toLowerCase(), text: w.word}); zhs.push({id: w.word.toLowerCase(), text: w.def}); });
       ens.sort(() => 0.5 - Math.random()); zhs.sort(() => 0.5 - Math.random());
-
       ens.forEach(c => {
-        const b = document.createElement("button");
-        b.className = "w-full min-h-[56px] bg-gray-900/40 border border-gray-800 rounded-xl px-4 py-3 text-sm font-semibold text-left text-gray-300 break-all transition-all duration-200";
+        const b = document.createElement("button"); b.className = "w-full min-h-[56px] bg-gray-900/40 border border-gray-800 rounded-xl px-4 py-3 text-sm font-semibold text-left text-gray-300 break-all transition-all duration-200";
         b.innerHTML = `<span>${c.text}</span>`; b.onclick = () => handleCardClick(b, c.id, 'en'); enCol.appendChild(b);
       });
-
       zhs.forEach(c => {
-        const b = document.createElement("button");
-        b.className = "w-full min-h-[56px] bg-gray-900/40 border border-gray-800 rounded-xl px-4 py-3 text-sm font-semibold text-left text-gray-300 break-all transition-all duration-200";
+        const b = document.createElement("button"); b.className = "w-full min-h-[56px] bg-gray-900/40 border border-gray-800 rounded-xl px-4 py-3 text-sm font-semibold text-left text-gray-300 break-all transition-all duration-200";
         b.innerHTML = `<span>${c.text}</span>`; b.onclick = () => handleCardClick(b, c.id, 'zh'); zhCol.appendChild(b);
       });
     }
-
-    function handleManualResetMatch() {
-      score = 0;
-      updateScoreUI();
-      initMatchGame();
-    }
-
+    function handleManualResetMatch() { score = 0; updateScoreUI(); initMatchGame(); }
     function handleCardClick(el, id, side) {
       if (el.classList.contains('border-emerald-500') || el.classList.contains('pointer-events-none')) return;
-
       if (side === 'en') {
         if (selectedEnCard) selectedEnCard.el.className = selectedEnCard.el.className.replace('border-indigo-500 bg-indigo-600/10 text-indigo-400', 'border-gray-800 text-gray-300');
         selectedEnCard = {el, id};
@@ -810,27 +842,14 @@
         selectedZhCard = {el, id};
       }
       el.className = el.className.replace('border-gray-800', '') + ' border-indigo-500 bg-indigo-600/10 text-indigo-400';
-
       if (selectedEnCard && selectedZhCard) {
         const enNode = selectedEnCard.el; const zhNode = selectedZhCard.el;
-        
         if (selectedEnCard.id === selectedZhCard.id) {
           enNode.className = enNode.className.replace('border-indigo-500', '') + ' border-emerald-500 text-emerald-400 pointer-events-none';
           zhNode.className = zhNode.className.replace('border-indigo-500', '') + ' border-emerald-500 text-emerald-400 pointer-events-none';
-          
-          score += 20; 
-          updateScoreUI(); 
-          activePairsLeft--;
-
+          score += 20; updateScoreUI(); activePairsLeft--;
           setTimeout(() => { enNode.style.visibility = "hidden"; zhNode.style.visibility = "hidden"; }, 200);
-          
-          if (activePairsLeft <= 0) {
-            setTimeout(() => { 
-              score = 0; 
-              updateScoreUI(); 
-              initMatchGame(); 
-            }, 400);
-          }
+          if (activePairsLeft <= 0) { setTimeout(() => { score = 0; updateScoreUI(); initMatchGame(); }, 400); }
         } else {
           enNode.className = enNode.className.replace('border-indigo-500', '') + ' border-red-500 text-red-400';
           zhNode.className = zhNode.className.replace('border-indigo-500', '') + ' border-red-500 text-red-400';
@@ -842,24 +861,21 @@
         selectedEnCard = null; selectedZhCard = null;
       }
     }
+    function updateScoreUI() { document.getElementById("match-score-text").innerText = score; document.getElementById("score-circle-path").setAttribute("stroke-dasharray", `${Math.min(score, 100)}, 100`); }
 
-    function updateScoreUI() { 
-      document.getElementById("match-score-text").innerText = score; 
-      document.getElementById("score-circle-path").setAttribute("stroke-dasharray", `${Math.min(score, 100)}, 100`); 
-    }
-
-    // ==================== ✍️ 寫作指南與金句同步模組 ====================
+    // ==================== ✍️ 寫作指南雲端連動 ====================
     function openAddWritingModal() { document.getElementById("add-writing-modal").classList.remove("hidden"); document.getElementById("modal-w-tag").focus(); }
     function closeAddWritingModal() { document.getElementById("add-writing-modal").classList.add("hidden"); }
     function submitNewWritingSentence() {
       const tag = document.getElementById("modal-w-tag").value.trim(); const sentence = document.getElementById("modal-w-sentence").value.trim(); const use = document.getElementById("modal-w-use").value.trim();
       if (!tag || !sentence || !use) return; writingData.unshift({ tag, sentence, use });
       try { localStorage.setItem("s5_writing_data", JSON.stringify(writingData)); } catch(e){}
-      closeAddWritingModal(); renderWritingSentences();
+      syncCloud("writing", writingData); closeAddWritingModal(); renderWritingSentences();
     }
     function deleteWritingSentence(index) {
       if (!confirm("確定要刪除此金句嗎？")) return; writingData.splice(index, 1);
-      try { localStorage.setItem("s5_writing_data", JSON.stringify(writingData)); } catch(e){} renderWritingSentences();
+      try { localStorage.setItem("s5_writing_data", JSON.stringify(writingData)); } catch(e){}
+      syncCloud("writing", writingData); renderWritingSentences();
     }
     function renderWritingSentences() {
       const container = document.getElementById("writing-sentences-container"); container.innerHTML = "";
@@ -870,40 +886,16 @@
       });
     }
 
-    // ==================== 🎓 真實 JUPAS 百分之百無損安全過濾引擎 ====================
+    // ==================== 🎓 JUPAS 百分之百全數據即時過濾排序 ====================
     function searchJupasUniversal(keyword) {
-      const box = document.getElementById("jupas-suggestion-box"); 
-      let cleanKey = keyword.trim().toUpperCase();
+      const box = document.getElementById("jupas-suggestion-box"); let cleanKey = keyword.trim().toUpperCase();
       if (cleanKey === "") { box.classList.add("hidden"); return; }
-      
-      let results = realJupasDatabase.filter(item => 
-        item.code.toUpperCase().includes(cleanKey) || 
-        item.title.toUpperCase().includes(cleanKey) ||
-        item.institution.toUpperCase().includes(cleanKey)
-      );
-
-      // 智能邊緣降級處理
+      let results = realJupasDatabase.filter(item => item.code.toUpperCase().includes(cleanKey) || item.title.toUpperCase().includes(cleanKey) || item.institution.toUpperCase().includes(cleanKey));
       if (results.length === 0 && /^JS\d{4}$/.test(cleanKey)) {
-        let firstDigit = cleanKey.charAt(2);
-        let universityName = institutionPrefixMap[firstDigit] || "Hong Kong Higher Education Institution";
-        
-        results.push({
-          code: cleanKey,
-          institution: universityName,
-          title: `[真實學科名稱待更新] Undergrad Degree Programme (Code: ${cleanKey})`,
-          quota: 25,
-          median: 23.0,
-          uq: 25.0
-        });
+        let firstDigit = cleanKey.charAt(2); let universityName = institutionPrefixMap[firstDigit] || "Hong Kong Higher Education Institution";
+        results.push({ code: cleanKey, institution: universityName, title: `[真實學科名稱待更新] Undergrad Degree Programme (Code: ${cleanKey})`, quota: 25, median: 23.0, uq: 25.0 });
       }
-
-      box.innerHTML = "";
-      if (results.length === 0) {
-        box.innerHTML = `<div class="p-3 text-xs text-gray-500 italic text-center">無匹配的真實 JUPAS 課程</div>`;
-        box.classList.remove("hidden");
-        return;
-      }
-
+      box.innerHTML = ""; if (results.length === 0) { box.innerHTML = `<div class="p-3 text-xs text-gray-500 italic text-center">無匹配的真實 JUPAS 課程</div>`; box.classList.remove("hidden"); return; }
       results.slice(0, 6).forEach(item => {
         const row = document.createElement("div"); row.className = "p-3 hover:bg-indigo-600/20 cursor-pointer transition-colors flex justify-between items-center text-xs";
         row.innerHTML = `<div class="space-y-0.5"><div class="font-bold text-gray-200"><span class="text-indigo-400 mr-1">[${item.code}]</span> ${item.title}</div><div class="text-[10px] text-gray-500">${item.institution} (學額: ${item.quota})</div></div><button class="bg-indigo-600 text-white font-bold px-2 py-1 rounded text-[10px]">加入</button>`;
@@ -911,17 +903,17 @@
       });
       box.classList.remove("hidden");
     }
-
     function addProgrammeToRankList(prog) {
       if (jupasUserRankList.some(item => item.code === prog.code)) return; jupasUserRankList.push(prog);
       try { localStorage.setItem("s5_jupas_rank_list", JSON.stringify(jupasUserRankList)); } catch(e){}
-      document.getElementById("jupas-search-field").value = ""; document.getElementById("jupas-suggestion-box").classList.add("hidden"); analyzeJupasAdmissions();
+      syncCloud("jupasRank", jupasUserRankList); document.getElementById("jupas-search-field").value = ""; document.getElementById("jupas-suggestion-box").classList.add("hidden"); analyzeJupasAdmissions();
     }
-    function removeProgramme(index) { jupasUserRankList.splice(index, 1); try { localStorage.setItem("s5_jupas_rank_list", JSON.stringify(jupasUserRankList)); } catch(e){} analyzeJupasAdmissions(); }
+    function removeProgramme(index) { jupasUserRankList.splice(index, 1); try { localStorage.setItem("s5_jupas_rank_list", JSON.stringify(jupasUserRankList)); } catch(e){} syncCloud("jupasRank", jupasUserRankList); analyzeJupasAdmissions(); }
     function moveRank(index, direction) {
       if (direction === 'up' && index > 0) { const temp = jupasUserRankList[index]; jupasUserRankList[index] = jupasUserRankList[index - 1]; jupasUserRankList[index - 1] = temp; }
       else if (direction === 'down' && index < jupasUserRankList.length - 1) { const temp = jupasUserRankList[index]; jupasUserRankList[index] = jupasUserRankList[index + 1]; jupasUserRankList[index + 1] = temp; }
-      try { localStorage.setItem("s5_jupas_rank_list", JSON.stringify(jupasUserRankList)); } catch(e){} analyzeJupasAdmissions();
+      try { localStorage.setItem("s5_jupas_rank_list", JSON.stringify(jupasUserRankList)); } catch(e){}
+      syncCloud("jupasRank", jupasUserRankList); analyzeJupasAdmissions();
     }
     function calculateDseScores() {
       let rawSum = 0; let scoreObj = { cores: [], electives: [] };
@@ -941,55 +933,32 @@
       if (jupasUserRankList.length === 0) { listContainer.innerHTML = `<div class="text-center py-8 text-gray-600 text-xs">選科清單空白，請搜尋並加入學科。</div>`; return; }
       jupasUserRankList.forEach((item, index) => {
         const diffMedian = userDseRawSum - item.median; const tagClass = diffMedian >= 0 ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : "bg-red-500/10 text-red-400 border border-red-500/20"; const tagSign = diffMedian >= 0 ? `+${diffMedian.toFixed(1)}` : `${diffMedian.toFixed(1)}`;
-        const card = document.createElement("div"); card.className = "bg-[#111827]/40 border border-gray-800/80 rounded-xl p-4 flex items-center justify-between gap-4 relative group hover:border-indigo-500/30 transition-all";
+        const card = document.createElement("div"); card.className = "bg-card border border-gray-800 rounded-xl p-4 flex items-center justify-between gap-4 relative group hover:border-indigo-500/30 transition-all";
         card.innerHTML = `<div class="space-y-1.5 flex-1 pr-2"><div class="flex flex-wrap items-center gap-2 text-[10px]"><span class="bg-indigo-600/10 text-indigo-400 font-black px-2 py-0.5 rounded-md border border-indigo-500/20">Choice ${index + 1}</span><span class="text-gray-400 font-bold">${item.institution}</span><span class="text-gray-600 font-semibold">編號: ${item.code}</span></div><h4 class="text-sm font-bold text-gray-200 leading-snug">${item.title}</h4><div class="text-[11px] text-gray-500 flex flex-wrap gap-x-4"><span>Your Score: <b class="text-gray-300">${userDseRawSum.toFixed(1)}</b></span><span>Median: <b>${item.median.toFixed(1)}</b></span><span>UQ: <b>${item.uq.toFixed(1)}</b></span></div></div><div class="flex items-center space-x-3 shrink-0"><div class="text-xs font-black px-2.5 py-1 rounded-lg ${tagClass} tracking-wide">${tagSign}</div><div class="flex flex-col space-y-1"><button onclick="moveRank(${index}, 'up')" class="p-1 bg-gray-900 border border-gray-800 rounded text-[10px]">🔼</button><button onclick="moveRank(${index}, 'down')" class="p-1 bg-gray-900 border border-gray-800 rounded text-[10px]">🔽</button></div><button onclick="removeProgramme(${index})" class="text-gray-600 hover:text-red-400 font-bold p-1 text-sm">✕</button></div>`;
         listContainer.appendChild(card);
       });
     }
 
-    // ==================== 📚 單字與文法模組 (多重釋義版) ====================
+    // ==================== 📚 詞彙多重釋義與同步引擎 ====================
     function openAddWordModal() { document.getElementById("add-word-modal").classList.remove("hidden"); document.getElementById("modal-word-input").focus(); }
     function closeAddWordModal() { document.getElementById("add-word-modal").classList.add("hidden"); }
-    
     async function submitNewWord() {
       const inputEl = document.getElementById("modal-word-input"); const statusText = document.getElementById("btn-status-text"); const rawWord = inputEl.value.trim(); if (rawWord === "") return;
-      statusText.innerText = "多重釋義檢索中..."; 
-      let finalDef = "自訂新單字";
-      
+      statusText.innerText = "多重釋義檢索中..."; let finalDef = "自訂新單字";
       try { 
         const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(rawWord)}&langpair=en|zh-HK`); 
         const data = await response.json(); 
-        
         if (data && data.responseData) {
           let matchesSet = new Set();
-          if (data.responseData.translatedText) {
-            let primary = data.responseData.translatedText.replace(/[.!?。！？]/g, "").trim();
-            matchesSet.add(primary);
-          }
-          if (data.matches && Array.isArray(data.matches)) {
-            data.matches.forEach(m => {
-              if (m.translation) {
-                let cleanText = m.translation.replace(/[a-zA-Z.!?。！？\s]/g, "").trim();
-                if (cleanText && cleanText.length <= 12 && !cleanText.includes("MyMemory")) {
-                  matchesSet.add(cleanText);
-                }
-              }
-            });
-          }
-          if (matchesSet.size > 0) {
-            finalDef = Array.from(matchesSet).slice(0, 4).join(" / ");
-          }
+          if (data.responseData.translatedText) matchesSet.add(data.responseData.translatedText.replace(/[.!?。！？]/g, "").trim());
+          if (data.matches) { data.matches.forEach(m => { if (m.translation) { let clean = m.translation.replace(/[a-zA-Z.!?。！？\s]/g, "").trim(); if (clean && clean.length <= 12 && !clean.includes("MyMemory")) matchesSet.add(clean); } }); }
+          if (matchesSet.size > 0) finalDef = Array.from(matchesSet).slice(0, 4).join(" / ");
         }
-      } catch (e) {
-        console.error(e);
-      }
-      
-      wordsData.unshift({ word: rawWord, type: "n.", def: finalDef, sampleSentence: "" }); 
+      } catch (e) { console.error(e); }
+      wordsData.unshift({ word: rawWord, type: "n.", def: finalDef, sampleSentence: "" });
       try { localStorage.setItem("s5_vocab_data", JSON.stringify(wordsData)); } catch(e){}
-      
-      statusText.innerText = "確認新增"; inputEl.value = ""; closeAddWordModal(); handleSearch("");
+      syncCloud("words", wordsData); statusText.innerText = "確認新增"; inputEl.value = ""; closeAddWordModal(); handleSearch("");
     }
-
     function openVocabActionModal(index) {
       currentlyActiveWordIndex = index; const targetVocab = wordsData[index];
       document.getElementById("action-modal-title").innerText = targetVocab.word; document.getElementById("action-modal-def").innerText = `[${targetVocab.type}] ${targetVocab.def}`;
@@ -998,15 +967,16 @@
       document.getElementById("vocab-action-modal").classList.remove("hidden");
     }
     function closeVocabActionModal() { document.getElementById("vocab-action-modal").classList.add("hidden"); }
-    function deleteVocabItem(index) { wordsData.splice(index, 1); try { localStorage.setItem("s5_vocab_data", JSON.stringify(wordsData)); } catch(e){} closeVocabActionModal(); handleSearch(""); }
-    function saveSampleSentence(index) { wordsData[index].sampleSentence = document.getElementById("action-modal-sentence-input").value.trim(); try { localStorage.setItem("s5_vocab_data", JSON.stringify(wordsData)); } catch(e){} alert("例句已儲存！💾"); closeVocabActionModal(); handleSearch(""); }
+    function deleteVocabItem(index) { wordsData.splice(index, 1); try { localStorage.setItem("s5_vocab_data", JSON.stringify(wordsData)); } catch(e){} syncCloud("words", wordsData); closeVocabActionModal(); handleSearch(""); }
+    function saveSampleSentence(index) { wordsData[index].sampleSentence = document.getElementById("action-modal-sentence-input").value.trim(); try { localStorage.setItem("s5_vocab_data", JSON.stringify(wordsData)); } catch(e){} syncCloud("words", wordsData); alert("例句已儲存！💾"); closeVocabActionModal(); handleSearch(""); }
 
     function openAddGrammarModal() { document.getElementById("add-grammar-modal").classList.remove("hidden"); }
     function closeAddGrammarModal() { document.getElementById("add-grammar-modal").classList.add("hidden"); }
     function submitNewGrammar() {
       const title = document.getElementById("modal-g-title").value.trim(); const formula = document.getElementById("modal-g-formula").value.trim(); const example = document.getElementById("modal-g-example").value.trim(); const warning = document.getElementById("modal-g-warning").value.trim();
       if (!title || !formula || !example) return; grammarData.unshift({ title, tag: "Custom Note", formula, example, warning });
-      try { localStorage.setItem("s5_grammar_data", JSON.stringify(grammarData)); } catch(e){} closeAddGrammarModal(); renderGrammarList();
+      try { localStorage.setItem("s5_grammar_data", JSON.stringify(grammarData)); } catch(e){}
+      syncCloud("grammar", grammarData); closeAddGrammarModal(); renderGrammarList();
     }
     function renderGrammarList() {
       const container = document.getElementById("grammar-list-container"); container.innerHTML = "";
