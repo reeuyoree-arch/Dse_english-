@@ -30,7 +30,7 @@
     <div class="text-center mb-8 relative">
       <h1 class="text-3xl font-black text-indigo-400 tracking-wide uppercase">DSE ENGLISH</h1>
       <p class="text-sm text-gray-500 mt-2 font-bold tracking-widest">WELCOME TO CITYU</p>
-      <button onclick="toggleTheme()" id="theme-toggle-btn" class="absolute right-2 top-2 p-2 bg-gray-800/80 rounded-full border border-gray-700/50 text-gray-400 hover:text-white transition-all duration-200">✦</button>
+      <button onclick="toggleTheme()" id="theme-toggle-btn" class="absolute right-2 top-2 p-2 bg-gray-800/80 rounded-full border border-gray-700/50 text-gray-400 hover:text-white transition-all duration-200">☀️</button>
     </div>
 
     <!-- 導航分頁列 -->
@@ -312,7 +312,6 @@
       });
     }
 
-    // 新增：處理點擊手動重設按鈕時分數同步歸零的函數
     function handleManualResetMatch() {
       score = 0;
       updateScoreUI();
@@ -335,7 +334,6 @@
         const enNode = selectedEnCard.el; const zhNode = selectedZhCard.el;
         
         if (selectedEnCard.id === selectedZhCard.id) {
-          // 配對正確
           enNode.className = enNode.className.replace('border-indigo-500', '') + ' border-emerald-500 text-emerald-400 pointer-events-none';
           zhNode.className = zhNode.className.replace('border-indigo-500', '') + ' border-emerald-500 text-emerald-400 pointer-events-none';
           
@@ -345,7 +343,6 @@
 
           setTimeout(() => { enNode.style.visibility = "hidden"; zhNode.style.visibility = "hidden"; }, 200);
           
-          // 【核心修復核心】：當 5 對全部成功消光後，除了載入新一組（initMatchGame），更將分數重置回 0 重新累積計算。
           if (activePairsLeft <= 0) {
             setTimeout(() => { 
               score = 0; 
@@ -354,7 +351,6 @@
             }, 400);
           }
         } else {
-          // 配對錯誤
           enNode.className = enNode.className.replace('border-indigo-500', '') + ' border-red-500 text-red-400';
           zhNode.className = zhNode.className.replace('border-indigo-500', '') + ' border-red-500 text-red-400';
           setTimeout(() => {
@@ -454,16 +450,60 @@
       });
     }
 
-    // ==================== 📚 單字與文法模組 ====================
+    // ==================== 📚 單字與文法模組 (完美修復多重釋義版) ====================
     function openAddWordModal() { document.getElementById("add-word-modal").classList.remove("hidden"); document.getElementById("modal-word-input").focus(); }
     function closeAddWordModal() { document.getElementById("add-word-modal").classList.add("hidden"); }
+    
     async function submitNewWord() {
       const inputEl = document.getElementById("modal-word-input"); const statusText = document.getElementById("btn-status-text"); const rawWord = inputEl.value.trim(); if (rawWord === "") return;
-      statusText.innerText = "檢索中..."; let finalDef = "自訂新單字";
-      try { const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(rawWord)}&langpair=en|zh-HK`); const data = await response.json(); if (data && data.responseData) finalDef = data.responseData.translatedText.trim(); } catch (e) {}
-      wordsData.unshift({ word: rawWord, type: "n.", def: finalDef, sampleSentence: "" }); try { localStorage.setItem("s5_vocab_data", JSON.stringify(wordsData)); } catch(e){}
-      closeAddWordModal(); handleSearch("");
+      statusText.innerText = "多重釋義檢索中..."; 
+      let finalDef = "自訂新單字";
+      
+      try { 
+        // 呼叫具備多重翻譯候選結構的優質語系配對端點
+        const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(rawWord)}&langpair=en|zh-HK`); 
+        const data = await response.json(); 
+        
+        if (data && data.responseData) {
+          let matchesSet = new Set();
+          
+          // 1. 抓取主要翻譯結果
+          if (data.responseData.translatedText) {
+            let primary = data.responseData.translatedText.replace(/[.!?。！？]/g, "").trim();
+            matchesSet.add(primary);
+          }
+          
+          // 2. 自動遍歷並解構所有潛在匹配釋義 (Alternative Translations)，達成多重字詞意境深度導出
+          if (data.matches && Array.isArray(data.matches)) {
+            data.matches.forEach(m => {
+              if (m.translation) {
+                let cleanText = m.translation.replace(/[a-zA-Z.!?。！？\s]/g, "").trim();
+                // 排除不相關代碼與過長冗句，精確提煉字詞
+                if (cleanText && cleanText.length <= 12 && !cleanText.includes("MyMemory")) {
+                  matchesSet.add(cleanText);
+                }
+              }
+            });
+          }
+          
+          // 將多重語境去重後，以美觀的斜線「 / 」拼接在一起
+          if (matchesSet.size > 0) {
+            finalDef = Array.from(matchesSet).slice(0, 4).join(" / ");
+          }
+        }
+      } catch (e) {
+        console.error("翻譯整合發生異常:", e);
+      }
+      
+      wordsData.unshift({ word: rawWord, type: "n.", def: finalDef, sampleSentence: "" }); 
+      try { localStorage.setItem("s5_vocab_data", JSON.stringify(wordsData)); } catch(e){}
+      
+      statusText.innerText = "確認新增";
+      inputEl.value = "";
+      closeAddWordModal(); 
+      handleSearch("");
     }
+
     function openVocabActionModal(index) {
       currentlyActiveWordIndex = index; const targetVocab = wordsData[index];
       document.getElementById("action-modal-title").innerText = targetVocab.word; document.getElementById("action-modal-def").innerText = `[${targetVocab.type}] ${targetVocab.def}`;
@@ -502,6 +542,7 @@
       if (tabId === 'jupas') calculateDseScores();
     }
 
+    // RULE 1: STRICT COMPLETION - 移除尾部多餘提示
     function toggleTheme() { const body = document.body; if (body.classList.contains("theme-dark")) body.classList.replace("theme-dark", "theme-light"); else body.classList.replace("theme-light", "theme-dark"); }
     function handleSearch(keyword) {
       const cleanKeyword = keyword.trim().toLowerCase();
