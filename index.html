@@ -26,7 +26,7 @@
     .theme-light .tab-active { border-bottom: 3px solid #4F46E5; color: #4F46E5; background-color: #EEF2FF; }
     .theme-light .bg-panel { background-color: rgba(255, 255, 255, 0.8); }
 
-    /* 🌸 完美還原 image_1a8397.png 高清細膩像素櫻花引擎 */
+    /* 🌸 還原 image_1a8397.png 高清細膩像素櫻花引擎 */
     .sakura-bg {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -43,69 +43,45 @@
       opacity: 0;
     }
 
-    /* 花型一：完美還原 image_1a8397.png 核心大菱形雙層綻放花簇（粉白漸變 + 璀璨金芯） */
+    /* 花型一：核心大菱形雙層綻放花簇 */
     .flower-type-a {
       background: #FFF5F7;
       box-shadow:
-        /* 核心金黃花蕊 */
         3px 0 0 #FFD700, -3px 0 0 #FFD700, 0 3px 0 #FFD700, 0 -3px 0 #FFD700,
-        /* 內層白粉色花冠 */
         3px 3px 0 #FFF0F2, -3px -3px 0 #FFF0F2, 3px -3px 0 #FFF0F2, -3px 3px 0 #FFF0F2,
         6px 0 0 #FFA6B9, -6px 0 0 #FFA6B9, 0 6px 0 #FFA6B9, 0 -6px 0 #FFA6B9,
-        /* 外圍深粉色漸變厚瓣結構 */
         6px 3px 0 #FF8CA3, 6px -3px 0 #FF8CA3, -6px 3px 0 #FF8CA3, -6px -3px 0 #FF8CA3,
         3px 6px 0 #FF8CA3, -3px 6px 0 #FF8CA3, 3px -6px 0 #FF8CA3, -3px -6px 0 #FF8CA3,
         9px 0 0 #FF758F, -9px 0 0 #FF758F, 0 9px 0 #FF758F, 0 -9px 0 #FF758F,
         6px 6px 0 #FF758F, -6px -6px 0 #FF758F, 6px -6px 0 #FF758F, -6px 6px 0 #FF758F;
     }
 
-    /* 花型二：精緻十字型四瓣鏤空花瓣（對應圖中右上角與中左側結構） */
+    /* 花型二：精緻十字型四瓣鏤空花瓣 */
     .flower-type-b {
       background: transparent;
       box-shadow:
-        /* 中央點綴微白黃芯 */
         0 0 0 #FFF, 0 -3px 0 #FFD700,
-        /* 四向對稱延伸的花瓣矩陣 */
         -6px -6px 0 #FFA6B9, -9px -6px 0 #FF758F, -6px -9px 0 #FF758F, -9px -9px 0 #FF8CA3,
         6px -6px 0 #FFA6B9, 9px -6px 0 #FF758F, 6px -9px 0 #FF758F, 9px -9px 0 #FF8CA3,
         -6px 6px 0 #FFA6B9, -9px 6px 0 #FF758F, -6px 9px 0 #FF758F, -9px 9px 0 #FF8CA3,
         6px 6px 0 #FFA6B9, 9px 6px 0 #FF758F, 6px 9px 0 #FF758F, 9px 9px 0 #FF8CA3;
     }
 
-    /* 花型三：圖中點綴的像素環境閃爍四瓣微粒 / 四散的小花蕾 */
+    /* 花型三：像素環境閃爍四瓣微粒 */
     .flower-type-c {
-      background: #FFD700; /* 金黃芯 */
+      background: #FFD700;
       box-shadow:
         0 -3px 0 #FFF, -3px 0 0 #FFF, 3px 0 0 #FFF, 0 3px 0 #FFF,
         -3px -3px 0 #FFA6B9, 3px -3px 0 #FFA6B9, -3px 3px 0 #FFA6B9, 3px 3px 0 #FFA6B9;
     }
 
     @keyframes bloomAndFall {
-      0% {
-        transform: translateY(-20px) translateX(0) scale(0) rotate(0deg);
-        opacity: 0;
-      }
-      /* 優雅微風原位綻放 */
-      12% {
-        transform: translateY(8vh) translateX(15px) scale(1.1) rotate(45deg);
-        opacity: 0.95;
-      }
-      25% {
-        transform: translateY(22vh) translateX(-10px) scale(1) rotate(90deg);
-        opacity: 0.9;
-      }
-      50% {
-        transform: translateY(50vh) translateX(25px) scale(0.95) rotate(180deg);
-        opacity: 0.85;
-      }
-      75% {
-        transform: translateY(78vh) translateX(-15px) scale(0.85) rotate(270deg);
-        opacity: 0.75;
-      }
-      100% {
-        transform: translateY(105vh) translateX(5px) scale(0.65) rotate(360deg);
-        opacity: 0;
-      }
+      0% { transform: translateY(-20px) translateX(0) scale(0) rotate(0deg); opacity: 0; }
+      12% { transform: translateY(8vh) translateX(15px) scale(1.1) rotate(45deg); opacity: 0.95; }
+      25% { transform: translateY(22vh) translateX(-10px) scale(1) rotate(90deg); opacity: 0.9; }
+      50% { transform: translateY(50vh) translateX(25px) scale(0.95) rotate(180deg); opacity: 0.85; }
+      75% { transform: translateY(78vh) translateX(-15px) scale(0.85) rotate(270deg); opacity: 0.75; }
+      100% { transform: translateY(105vh) translateX(5px) scale(0.65) rotate(360deg); opacity: 0; }
     }
   </style>
 </head>
@@ -303,7 +279,7 @@
   <div id="vocab-action-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
     <div class="bg-[#111827] border border-gray-800 rounded-2xl max-w-sm w-full p-6 shadow-2xl space-y-4 text-left">
       <div class="flex justify-between items-start"><div><h3 id="action-modal-title" class="text-lg font-black text-indigo-400 tracking-wide">Word Detail</h3><p id="action-modal-def" class="text-xs text-gray-400 mt-0.5 leading-normal"></p></div><button onclick="closeVocabActionModal()" class="text-gray-500 hover:text-white text-sm font-bold px-1">✕</button></div>
-      <div class="space-y-1.5"><label class="block text-[11px] font-bold text-emerald-400 uppercase tracking-wider">📝 Sample Sentence (自訂專屬例句)</label><textarea id="action-modal-sentence-input" rows="3" class="w-full bg-gray-900 border border-gray-800 rounded-xl px-3 py-2 text-sm text-gray-200 placeholder-gray-600 text-[15px]" placeholder="Type your sample sentence..."></textarea></div>
+      <div class="space-y-1.5"><label class="block text-[11px] font-bold text-emerald-400 uppercase tracking-wider">📝 Sample Sentence (自訂專專屬例句)</label><textarea id="action-modal-sentence-input" rows="3" class="w-full bg-gray-900 border border-gray-800 rounded-xl px-3 py-2 text-sm text-gray-200 placeholder-gray-600 text-[15px]" placeholder="Type your sample sentence..."></textarea></div>
       <div class="flex justify-between items-center pt-2 border-t border-gray-800/60"><button id="action-modal-delete-btn" class="px-3 py-2 bg-red-600/10 border border-red-500/20 text-xs font-semibold text-red-400 rounded-lg hover:bg-red-600 hover:text-white">🗑️ 刪除</button><button id="action-modal-save-btn" class="px-4 py-2 bg-emerald-600 text-xs font-semibold text-white rounded-lg hover:bg-emerald-500">💾 儲存例句</button></div>
     </div>
   </div>
@@ -335,7 +311,7 @@
 
   <script>
     // ==========================================
-    // ⚙️ FIREBASE 跨裝置雲端即時連動設定區 (已注入專屬金鑰)
+    // ⚙️ FIREBASE 跨裝置雲端即時連動設定區
     // ==========================================
     const firebaseConfig = {
       apiKey: "AIzaSyAfUQPCLpBeeFSD5bV0xzElV6rs-t-wRFA",
@@ -389,7 +365,7 @@
     ];
 
     // ==========================================
-    // 🎓 補全：全港九間 JUPAS 參與院校全學科大數據
+    // 🎓 全港九間 JUPAS 參與院校全學科大數據
     // ==========================================
     const realJupasDatabase = [
       // === CITYU (香港城市大學) ===
@@ -427,7 +403,7 @@
       { code: "JS1102", institution: "City University of Hong Kong (CityU)", title: "BSocSc International Relations and Global Affairs 國際關係", quota: 40, uq: 23.5, median: 24.0 },
       { code: "JS1103", institution: "City University of Hong Kong (CityU)", title: "BA Chinese and History 中文及歷史文學士", quota: 45, uq: 35.5, median: 36.0 },
       { code: "JS1104", institution: "City University of Hong Kong (CityU)", title: "BA English 英文文學士", quota: 50, uq: 29.5, median: 32.0 },
-      { code: "JS1106", institution: "Media and Communication 媒體與傳播學組", quota: 65, uq: 20.0, median: 20.5 },
+      { code: "JS1106", institution: "City University of Hong Kong (CityU)", title: "Media and Communication 媒體與傳播學組", quota: 65, uq: 20.0, median: 20.5 },
       { code: "JS1108", institution: "City University of Hong Kong (CityU)", title: "BSocSc Public Affairs and Management 公共事務與管理", quota: 45, uq: 23.0, median: 23.5 },
       { code: "JS1109", institution: "City University of Hong Kong (CityU)", title: "BA Linguistics and Language Applications 語言學及語言應用", quota: 30, uq: 30.0, median: 29.5 },
       { code: "JS1111", institution: "City University of Hong Kong (CityU)", title: "BSocSc Crime Science 犯罪科學社會科學學士", quota: 35, uq: 23.0, median: 23.0 },
@@ -444,7 +420,7 @@
       { code: "JS1043", institution: "City University of Hong Kong (CityU)", title: "BSc Creative Media 創意媒體理學士", quota: 35, uq: 26.5, median: 25.5 },
       { code: "JS1044", institution: "City University of Hong Kong (CityU)", title: "BAS New Media 新媒體文理學士", quota: 30, uq: 24.0, median: 24.0 },
       { code: "JS1051", institution: "City University of Hong Kong (CityU)", title: "Energy and Environment 能源及環境學組", quota: 40, uq: 36.5, median: 38.0 },
-      { code: "JS1053", institution: "City University of Hong Kong (CityU)", title: "BSc Environment and Sustainable Business 環境與可持續發展商業", quota: 30, uq: 40.0, median: 39.5 },
+      { code: "JS1053", institution: "City University " + "of Hong Kong (CityU)", title: "BSc Environment and Sustainable Business 環境與可持續發展商業", quota: 30, uq: 40.0, median: 39.5 },
       { code: "JS1061", institution: "City University of Hong Kong (CityU)", title: "Bachelor of Laws 法學學士", quota: 60, uq: 23.0, median: 21.5 },
       { code: "JS1052", institution: "City University of Hong Kong (CityU)", title: "BEng Environmental Science & Eng and BBA Finance (Double Degree)", quota: 15, uq: 40.0, median: 39.5 },
       { code: "JS1062", institution: "City University of Hong Kong (CityU)", title: "Bachelor of Laws and BBA Accountancy (Double Degree)", quota: 20, uq: 29.0, median: 25.0 },
@@ -886,23 +862,39 @@
       });
     }
 
-    // ==================== 🎓 JUPAS 百分之百全數據即時過濾排序 ====================
+    // ==================== 🎓 JUPAS 高強度安全過濾與排序 ====================
     function searchJupasUniversal(keyword) {
       const box = document.getElementById("jupas-suggestion-box"); let cleanKey = keyword.trim().toUpperCase();
       if (cleanKey === "") { box.classList.add("hidden"); return; }
-      let results = realJupasDatabase.filter(item => item.code.toUpperCase().includes(cleanKey) || item.title.toUpperCase().includes(cleanKey) || item.institution.toUpperCase().includes(cleanKey));
+      
+      // 加入高安全性的防崩潰 Null-safe 過濾機制
+      let results = realJupasDatabase.filter(item => {
+        const codeMatch = item.code ? item.code.toUpperCase().includes(cleanKey) : false;
+        const titleMatch = item.title ? item.title.toUpperCase().includes(cleanKey) : false;
+        const instMatch = item.institution ? item.institution.toUpperCase().includes(cleanKey) : false;
+        return codeMatch || titleMatch || instMatch;
+      });
+      
       if (results.length === 0 && /^JS\d{4}$/.test(cleanKey)) {
         let firstDigit = cleanKey.charAt(2); let universityName = institutionPrefixMap[firstDigit] || "Hong Kong Higher Education Institution";
         results.push({ code: cleanKey, institution: universityName, title: `[真實學科名稱待更新] Undergrad Degree Programme (Code: ${cleanKey})`, quota: 25, median: 23.0, uq: 25.0 });
       }
-      box.innerHTML = ""; if (results.length === 0) { box.innerHTML = `<div class="p-3 text-xs text-gray-500 italic text-center">無匹配的真實 JUPAS 課程</div>`; box.classList.remove("hidden"); return; }
+      
+      box.innerHTML = ""; 
+      if (results.length === 0) { 
+        box.innerHTML = `<div class="p-3 text-xs text-gray-500 italic text-center">無匹配的真實 JUPAS 課程</div>`; 
+        box.classList.remove("hidden"); 
+        return; 
+      }
+      
       results.slice(0, 6).forEach(item => {
         const row = document.createElement("div"); row.className = "p-3 hover:bg-indigo-600/20 cursor-pointer transition-colors flex justify-between items-center text-xs";
-        row.innerHTML = `<div class="space-y-0.5"><div class="font-bold text-gray-200"><span class="text-indigo-400 mr-1">[${item.code}]</span> ${item.title}</div><div class="text-[10px] text-gray-500">${item.institution} (學額: ${item.quota})</div></div><button class="bg-indigo-600 text-white font-bold px-2 py-1 rounded text-[10px]">加入</button>`;
+        row.innerHTML = `<div class="space-y-0.5"><div class="font-bold text-gray-200"><span class="text-indigo-400 mr-1">[${item.code || 'N/A'}]</span> ${item.title || 'Untitled'}</div><div class="text-[10px] text-gray-500">${item.institution || 'Unknown'} (學額: ${item.quota || 0})</div></div><button class="bg-indigo-600 text-white font-bold px-2 py-1 rounded text-[10px]">加入</button>`;
         row.onclick = () => addProgrammeToRankList(item); box.appendChild(row);
       });
       box.classList.remove("hidden");
     }
+    
     function addProgrammeToRankList(prog) {
       if (jupasUserRankList.some(item => item.code === prog.code)) return; jupasUserRankList.push(prog);
       try { localStorage.setItem("s5_jupas_rank_list", JSON.stringify(jupasUserRankList)); } catch(e){}
